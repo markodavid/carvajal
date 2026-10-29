@@ -20,7 +20,6 @@ from carvajal.config import (
     DEEPSEEK_API_KEY,
     DEEPSEEK_BASE_URL,
     DEEPSEEK_MODEL,
-    GOLD_DIR,
     INDEX_DIR,
     LLM_PROVIDER,
     QUESTIONS_FILE,
@@ -43,49 +42,6 @@ DEFAULT_SYSTEM_PROMPT = (
     "entre fuentes oficiales (carvajal.com) y de terceros (prensa, analistas): si una cifra "
     "proviene de un tercero, dilo y menciona el medio y la fecha."
 )
-
-
-def load_gold_documents(gold_dir: Path = GOLD_DIR) -> list[Document]:
-    """Carga los entregables Gold (Markdown con front matter) como documentos.
-
-    Args:
-        gold_dir: Directorio con los Markdown del corpus.
-
-    Returns:
-        Lista de documentos listos para embeddear y recuperar.
-    """
-
-    documents: list[Document] = []
-    if not gold_dir.exists():
-        return documents
-    for path in sorted(gold_dir.glob("*.md")):
-        content = path.read_text(encoding="utf-8")
-        front_matter = _parse_front_matter(content)
-        metadata = {
-            "source": str(path),
-            "slug": path.stem,
-            "title": front_matter.get("title", path.stem),
-            "domain": front_matter.get("domain", "carvajal.com"),
-            "source_type": front_matter.get("source_type", "oficial"),
-        }
-        documents.append(Document(page_content=content, metadata=metadata))
-    return documents
-
-
-def _parse_front_matter(content: str) -> dict[str, str]:
-    """Lee el *front matter* YAML simple del Markdown Gold (clave: valor)."""
-
-    if not content.startswith("---"):
-        return {}
-    parts = content.split("---", 2)
-    if len(parts) != 3:
-        return {}
-    metadata: dict[str, str] = {}
-    for line in parts[1].splitlines():
-        key, separator, value = line.partition(":")
-        if separator and key.strip():
-            metadata[key.strip()] = value.strip()
-    return metadata
 
 
 def build_retriever(documents: list[Document], index_dir: Path = INDEX_DIR) -> BaseRetriever:

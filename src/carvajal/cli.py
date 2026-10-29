@@ -12,6 +12,7 @@ from carvajal.config import (
     RESULTS_FILE,
     SEEDS,
 )
+from carvajal.corpus import load_gold_documents
 from carvajal.fetching import WebClient
 from carvajal.pipeline import CaptureReport
 from carvajal.pipeline import capture as run_capture
@@ -22,7 +23,6 @@ from carvajal.rag import (
     build_retriever,
     build_system_prompt,
     evaluate,
-    load_gold_documents,
     load_questions,
     render_results_markdown,
 )

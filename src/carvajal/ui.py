@@ -1,20 +1,29 @@
 """Interfaz web (Streamlit): pipeline de scraping visible y asistente RAG."""
 
 from dataclasses import dataclass
+from types import ModuleType
 
 import streamlit as st
 from langchain_core.documents import Document
 
 from carvajal.config import EXTERNAL_SEEDS, LLM_PROVIDER, SEEDS
+from carvajal.corpus import load_gold_documents
 from carvajal.fetching import WebClient
 from carvajal.pipeline import CaptureEvent, CaptureReport, capture
-from carvajal.rag import (
-    ask_with_sources,
-    build_retriever,
-    build_system_prompt,
-    index_is_fresh,
-    load_gold_documents,
-)
+
+
+def _rag() -> ModuleType:
+    """Importa el stack RAG solo cuando se usa.
+
+    ``langchain``, ``faiss`` y los clientes de LLM tardan ~50 s en importarse en este
+    equipo, así que mantenerlos fuera del arranque deja la pestaña del pipeline
+    disponible de inmediato.
+    """
+
+    from carvajal import rag
+
+    return rag
+
 
 SCOPE_OPTIONS = {
     "Todo el corpus (21 URLs)": "todo",
@@ -188,7 +197,7 @@ def _client(respect_robots: bool) -> WebClient:
 def render_assistant_tab(documents: list[Document]) -> None:
     """Dibuja la pestaña del asistente (Q&A con fuentes citadas)."""
 
-    if not index_is_fresh(documents):
+    if not _rag().index_is_fresh(documents):
         st.warning(
             "El índice vectorial no corresponde al corpus actual: la primera pregunta "
             "lo reconstruirá y puede tardar varios minutos."
@@ -217,18 +226,19 @@ def render_assistant_tab(documents: list[Document]) -> None:
 def _answer(question: str, documents: list[Document]) -> tuple[str, list[Document]]:
     """Resuelve la pregunta usando el retriever cacheado en la sesión."""
 
+    rag = _rag()
     retriever = st.session_state.get("retriever")
     if retriever is None:
         with st.spinner("Preparando el índice por primera vez…"):
-            retriever = build_retriever(documents)
+            retriever = rag.build_retriever(documents)
         st.session_state["retriever"] = retriever
 
     system_prompt = st.session_state.get("system_prompt")
     if system_prompt is None:
-        system_prompt = build_system_prompt(documents)
+        system_prompt = rag.build_system_prompt(documents)
         st.session_state["system_prompt"] = system_prompt
 
-    return ask_with_sources(question, retriever, system_prompt=system_prompt)
+    return rag.ask_with_sources(question, retriever, system_prompt=system_prompt)
 
 
 def main() -> None:

@@ -10,6 +10,7 @@ from langchain_core.runnables import RunnableLambda
 from langchain_ollama import ChatOllama
 from langchain_openai import ChatOpenAI
 
+from carvajal.corpus import load_gold_documents
 from carvajal.rag import (
     DEFAULT_SYSTEM_PROMPT,
     ask,
@@ -17,7 +18,6 @@ from carvajal.rag import (
     build_retriever,
     build_system_prompt,
     evaluate,
-    load_gold_documents,
     load_questions,
     render_results_markdown,
 )
