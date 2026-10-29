@@ -114,12 +114,24 @@ uv run carvajal list
 # Preguntar al corpus (RAG)
 uv run carvajal ask "¿En qué consiste el fondo de inversión de Carvajal?"
 
-# Interfaz web de pruebas (Streamlit)
-make app
+# Interfaz web: pipeline visible + asistente RAG
+uv run streamlit run app.py     # o: make app
 
 # Evaluación: 25 preguntas de prueba -> docs/resultados.md
 make eval
 ```
+
+### Interfaz web
+
+`uv run streamlit run app.py` abre dos pestañas:
+
+| Pestaña | Qué muestra |
+|---|---|
+| **Pipeline de scraping** | Ejecuta la captura en vivo con las 7 etapas (descubrir → `robots.txt` → descargar → extraer → deduplicar → enriquecer → indexar), el log por etapa y las métricas: descubiertas, descargadas, escritas, descartadas (con motivo), caracteres, tokens y duración. Arriba, el estado del corpus Gold. |
+| **Asistente** | Pregunta y respuesta RAG con **fuentes citadas**: dominio, tipo de fuente (oficial/tercero) y fragmento recuperado. Avisa si el índice vectorial está desactualizado. |
+
+La captura es idempotente: si el contenido de una página no cambia, su `hash` se repite y el
+índice FAISS **no se invalida**, así que se puede ejecutar la demo sin esperar la reconstrucción.
 
 ## Configuración del LLM
 

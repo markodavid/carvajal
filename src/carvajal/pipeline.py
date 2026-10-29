@@ -1,6 +1,7 @@
 """Orquestación del pipeline: capas Bronze → Silver → Gold con reporte de métricas."""
 
 import time
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -15,6 +16,18 @@ from carvajal.extracting import html_title, html_to_markdown
 from carvajal.fetching import Fetcher, FetchError, RobotsDenied, WebClient
 from carvajal.gold import index_entry, write_bronze, write_gold, write_index, write_silver
 from carvajal.models import CapturedPage
+
+
+@dataclass(frozen=True)
+class CaptureEvent:
+    """Evento de progreso emitido durante la captura (lo consume la interfaz)."""
+
+    stage: str
+    url: str = ""
+    detail: str = ""
+
+
+ProgressHook = Callable[[CaptureEvent], None]
 
 
 @dataclass
@@ -51,6 +64,7 @@ def capture(
     raw_dir: Path | None = None,
     processed_dir: Path | None = None,
     index_file: Path | None = None,
+    on_event: ProgressHook | None = None,
 ) -> CaptureReport:
     """Ejecuta el ciclo descubrir → extraer → limpiar → deduplicar → enriquecer.
 
@@ -61,6 +75,7 @@ def capture(
         raw_dir: Directorio de la capa Bronze (por defecto ``data/raw``).
         processed_dir: Directorio de la capa Silver (por defecto ``data/processed``).
         index_file: Ruta del índice JSONL (por defecto ``data/gold/index.jsonl``).
+        on_event: Gancho opcional que recibe cada evento de progreso por etapa.
 
     Returns:
         Reporte con las métricas de la ejecución y las páginas capturadas.
@@ -76,31 +91,44 @@ def capture(
     report = CaptureReport(discovered=len(seeds))
     seen_hashes: set[str] = set()
     entries: list[dict[str, str | int]] = []
+    _emit(on_event, "descubrir", detail=f"{len(seeds)} semillas")
 
     for url in seeds:
         if not web_client.can_fetch(url):
             report.robots_denied.append(url)
+            _emit(on_event, "robots", url, "bloqueada por robots.txt")
             continue
+        _emit(on_event, "robots", url, "permitida")
         try:
             html = web_client.fetch(url)
         except RobotsDenied:
             report.robots_denied.append(url)
+            _emit(on_event, "robots", url, "bloqueada por robots.txt")
             continue
         except FetchError as error:
             report.errors.append(f"{url}: {error}")
+            _emit(on_event, "descargar", url, f"error: {error}")
             continue
+        _emit(on_event, "descargar", url, f"{len(html):,} bytes")
 
         page = CapturedPage(url=url, html=html, markdown=html_to_markdown(html))
+        _emit(on_event, "extraer", url, f"{len(page.markdown):,} caracteres")
+
         if len(page.markdown) >= MIN_DEDUPE_CHARS and page.content_hash in seen_hashes:
             report.duplicates.append(url)
+            _emit(on_event, "deduplicar", url, "duplicada por hash")
             continue
         seen_hashes.add(page.content_hash)
+        _emit(on_event, "deduplicar", url, "nueva")
 
         write_bronze(page, target_raw)
         write_silver(page, target_processed)
         title = _title_for(page)
         write_gold(page, title=title, gold_dir=target_gold)
         entries.append(index_entry(page, title))
+        _emit(
+            on_event, "enriquecer", url, f"sección {page.section} · {page.tokens_estimate} tokens"
+        )
 
         report.pages.append(page)
         report.fetched += 1
@@ -108,8 +136,16 @@ def capture(
         report.chars += len(page.markdown)
 
     write_index(entries, target_index)
+    _emit(on_event, "indice", detail=f"{len(entries)} documentos indexados")
     report.duration_seconds = round(time.monotonic() - started, 2)
     return report
+
+
+def _emit(hook: ProgressHook | None, stage: str, url: str = "", detail: str = "") -> None:
+    """Notifica un evento de progreso si hay gancho registrado."""
+
+    if hook is not None:
+        hook(CaptureEvent(stage=stage, url=url, detail=detail))
 
 
 def _title_for(page: CapturedPage) -> str:

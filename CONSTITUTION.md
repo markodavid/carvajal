@@ -127,6 +127,7 @@ carvajal/
 │   ├── gold/                # gold — entregable versionado
 │   └── index/               # índice FAISS en caché (regenerable, ignorado por Git)
 ├── tests/                   # pruebas (pytest, patrón AAA)
+├── app.py                   # entrada de la interfaz: streamlit run app.py
 ├── docs/                    # documentación, ADRs e investigación
 │   ├── arquitectura.json    # fuente tipada del diagrama (Archify)
 │   ├── arquitectura.html    # diagrama interactivo autocontenido
@@ -227,6 +228,7 @@ git push
 | 2026-10-29 | Materializar las capas Bronze y Silver y añadir `index.jsonl` | El pipeline escribía solo Gold: el patrón Medallion era una promesa del informe, no del código. Ahora cada capa queda en disco y el índice JSONL permite auditar URL, sección, hash y tamaño |
 | 2026-10-29 | Respetar `robots.txt` + `Crawl-delay` y aplicar rate limit de 1 s por host | El README lo afirmaba sin implementarlo; es requisito de captura responsable y de la rúbrica |
 | 2026-10-29 | Deduplicar por SHA-256 y enriquecer con `section` y `hash` | Evita documentos repetidos al ampliar semillas y da trazabilidad por documento |
+| 2026-10-29 | Interfaz Streamlit de dos pestañas con el pipeline visible | La evaluación exige ver las etapas y las métricas del scraping en pantalla, no solo el Q&A. El `CaptureReport` y los eventos de progreso son la fuente única de esas métricas |
 
 ## 10. Notas y tareas pendientes
 

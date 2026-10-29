@@ -160,6 +160,24 @@ def _fingerprint(chunks: list[Document]) -> str:
     return digest.hexdigest()
 
 
+def index_is_fresh(documents: list[Document], index_dir: Path = INDEX_DIR) -> bool:
+    """Indica si el índice FAISS en caché corresponde al corpus actual.
+
+    Args:
+        documents: Documentos cargados desde ``data/gold/``.
+        index_dir: Directorio del índice (por defecto ``data/index``).
+
+    Returns:
+        ``True`` si la huella del corpus coincide con la del índice guardado.
+    """
+
+    fingerprint_file = index_dir / "fingerprint.txt"
+    if not fingerprint_file.exists():
+        return False
+    stored = fingerprint_file.read_text(encoding="utf-8").strip()
+    return stored == _fingerprint(_split_documents(documents))
+
+
 def build_system_prompt(documents: list[Document]) -> str:
     """Consolida el corpus limpio en el prompt de sistema (la 'memoria' del asistente).
 
@@ -234,6 +252,28 @@ def ask(
         Respuesta generada por el LLM.
     """
 
+    answer, _ = ask_with_sources(question, retriever, system_prompt=system_prompt, llm=llm)
+    return answer
+
+
+def ask_with_sources(
+    question: str,
+    retriever: Runnable,
+    system_prompt: str | None = None,
+    llm: Runnable | None = None,
+) -> tuple[str, list[Document]]:
+    """Genera la respuesta y devuelve también los fragmentos que la sustentan.
+
+    Args:
+        question: Pregunta del usuario.
+        retriever: Retriever sobre el corpus.
+        system_prompt: Instrucciones de sistema (por defecto: ``DEFAULT_SYSTEM_PROMPT``).
+        llm: LLM invocable (por defecto: el LLM configurado por ``LLM_PROVIDER``).
+
+    Returns:
+        Tupla con la respuesta generada y la lista de documentos recuperados.
+    """
+
     retrieved_documents = retriever.invoke(question)
     context = "\n\n".join(document.page_content for document in retrieved_documents)
     prompt = ChatPromptTemplate.from_messages(
@@ -244,7 +284,7 @@ def ask(
     )
     messages = prompt.format_messages(context=context, question=question)
     response = (llm if llm is not None else build_llm()).invoke(messages)
-    return str(response.content)
+    return str(response.content), list(retrieved_documents)
 
 
 def load_questions(path: Path = QUESTIONS_FILE) -> list[str]:

@@ -58,7 +58,7 @@ build: ## Construye el paquete (sdist + wheel)
 	uv build
 
 app: ## Lanza la interfaz web de prueba (Streamlit)
-	uv run streamlit run src/carvajal/ui.py
+	uv run streamlit run app.py
 
 eval: ## Ejecuta las preguntas de prueba y genera docs/resultados.md
 	uv run carvajal eval

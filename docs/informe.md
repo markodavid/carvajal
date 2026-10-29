@@ -144,6 +144,21 @@ para enfocar la respuesta. El enfoque es *zero-shot*: no se usan ejemplos few-sh
 la robustez se logra con instrucciones explícitas, delimitadores del corpus y
 temperatura 0.
 
+### 4.5 Interfaz de prueba
+
+`uv run streamlit run app.py` levanta una aplicación de dos pestañas:
+
+- **Pipeline de scraping**: ejecuta la captura y muestra en pantalla las siete etapas
+  (descubrir, `robots.txt`, descargar, extraer, deduplicar, enriquecer, indexar), el log
+  por URL y las métricas de la corrida: descubiertas, descargadas, escritas, descartadas
+  con su motivo, caracteres, tokens estimados y duración.
+- **Asistente**: pregunta → respuesta con **fuentes citadas** (dominio, tipo de fuente y
+  fragmento recuperado). Advierte si el índice vectorial está desactualizado.
+
+La captura es idempotente: si el contenido no cambia, el `hash` se repite y el índice
+FAISS no se invalida, de modo que la demostración puede ejecutarse sin esperar la
+reconstrucción de embeddings.
+
 ## 5. Resultados
 
 ### 5.1 Metodología
