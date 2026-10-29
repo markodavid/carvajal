@@ -1,7 +1,12 @@
 ---
 url: https://www.carvajal.com/noticias/
-title: Noticias
-captured_at: 2026-10-28T15:31:23.580620+00:00
+title: Noticias archivo
+section: noticias
+domain: carvajal.com
+source_type: oficial
+captured_at: 2026-10-29T16:30:30.567566+00:00
+hash: 1ae56b7431c346da589a9425b4fba49a83272e75d2b7376eaf68ac4d7e760d16
+chars: 1170
 ---
 
 ## UNIDOS PARA RECUPERAR Y REVITALIZAR A FICO

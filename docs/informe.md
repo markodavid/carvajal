@@ -58,7 +58,8 @@ Decisiones técnicas:
 - Semillas explícitas en `src/carvajal/config.py`: **15 URLs** del sitio oficial
   (`config.SEEDS`) y **6 fuentes de terceros** (`config.EXTERNAL_SEEDS`).
 - Cliente HTTP `requests` con sesión única, `User-Agent` identificable y `timeout`
-  de 30 s; se respeta `robots.txt`.
+  de 30 s; **se consulta `robots.txt`** por host (incluido `Crawl-delay`, si existe) y
+  se espera **1 s entre peticiones** al mismo host.
 - Se descartan del alcance vídeos, PDFs y páginas autenticadas.
 
 **Por qué fuentes de terceros.** Los indicadores financieros no están en el HTML de
@@ -73,9 +74,15 @@ cada cifra a su medio y fecha.
 
 ### 3.2 Limpieza
 
-Pipeline Medallion: **bronze** (HTML crudo) → **silver** (Markdown limpio) →
-**gold** (Markdown + *front matter* + índice JSONL). El entregable versionado es
-`data/gold/`.
+Pipeline Medallion: **bronze** (`data/raw/*.html`, HTML crudo) → **silver**
+(`data/processed/*.md`, Markdown limpio) → **gold** (`data/gold/*.md`, Markdown +
+*front matter*) más el índice `data/gold/index.jsonl`. El entregable versionado es
+`data/gold/`; bronze y silver se regeneran con `carvajal capture`.
+
+El pipeline aplica, en orden: `robots.txt` (con `Crawl-delay`), *rate limit* de 1 s por
+host, `User-Agent` propio y timeout de 30 s; después extrae el Markdown, deduplica por
+huella SHA-256 del contenido, y enriquece cada documento con `section`, `domain`,
+`source_type`, `hash` y `chars`.
 
 El extractor (`src/carvajal/extracting.py`) recorre el DOM y conserva encabezados,
 párrafos, listas y tablas, descartando subárboles de navegación (`nav`, `header`,

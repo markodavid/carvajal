@@ -3,7 +3,17 @@
 import argparse
 from pathlib import Path
 
-from carvajal.config import EXTERNAL_SEEDS, QUESTIONS_FILE, RESULTS_FILE, SEEDS
+from carvajal.config import (
+    EXTERNAL_SEEDS,
+    GOLD_DIR,
+    INDEX_FILE,
+    QUESTIONS_FILE,
+    REQUEST_DELAY_SECONDS,
+    RESULTS_FILE,
+    SEEDS,
+)
+from carvajal.fetching import WebClient
+from carvajal.pipeline import CaptureReport
 from carvajal.pipeline import capture as run_capture
 from carvajal.rag import (
     ask as run_ask,
@@ -51,6 +61,17 @@ def build_parser() -> argparse.ArgumentParser:
         "--list-seeds",
         action="store_true",
         help="Lista las semillas configuradas y termina.",
+    )
+    capture_parser.add_argument(
+        "--delay",
+        type=float,
+        default=None,
+        help="Segundos de espera entre peticiones al mismo host (rate limit).",
+    )
+    capture_parser.add_argument(
+        "--ignore-robots",
+        action="store_true",
+        help="No consultar robots.txt (solo para pruebas locales).",
     )
 
     ask_parser = subparsers.add_parser(
@@ -111,9 +132,11 @@ def main(argv: list[str] | None = None) -> int:
             for seed in seeds:
                 print(seed)
             return 0
-        pages = run_capture(seeds)
-        for page in pages:
+        client = _build_client(args)
+        report = run_capture(seeds, client=client)
+        for page in report.pages:
             print(f"Capturada: {page.url} -> data/gold/{page.slug}.md")
+        print_report(report)
         return 0
 
     if args.command == "ask":
@@ -141,10 +164,62 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "status":
         print(f"Semillas oficiales: {len(SEEDS)}")
         print(f"Semillas de terceros: {len(EXTERNAL_SEEDS)}")
+        _print_corpus_status()
         return 0
 
     parser.print_help()
     return 0
+
+
+def _build_client(args: argparse.Namespace) -> WebClient:
+    """Construye el cliente HTTP con el rate limit y la política pedidos."""
+
+    delay = REQUEST_DELAY_SECONDS if args.delay is None else args.delay
+    return WebClient(delay=delay, respect_robots=not args.ignore_robots)
+
+
+def print_report(report: CaptureReport) -> None:
+    """Imprime las métricas de la ejecución del pipeline."""
+
+    print()
+    print("Resumen de la captura")
+    print(f"  Descubiertas (semillas): {report.discovered}")
+    print(f"  Descargadas:             {report.fetched}")
+    print(f"  Escritas en Gold:        {report.written}")
+    print(f"  Descartadas:             {report.discarded}")
+    print(f"     - por robots.txt:     {len(report.robots_denied)}")
+    print(f"     - duplicadas:         {len(report.duplicates)}")
+    print(f"     - con error:          {len(report.errors)}")
+    print(f"  Caracteres:              {report.chars:,}")
+    print(f"  Tokens (estimados):      {report.tokens_estimate:,}")
+    print(f"  Duración:                {report.duration_seconds} s")
+    for error in report.errors:
+        print(f"  ! {error}")
+
+
+def _print_corpus_status() -> None:
+    """Resume el corpus Gold: documentos, tamaño y composición por origen."""
+
+    documents = sorted(GOLD_DIR.glob("*.md"))
+    chars = sum(path.stat().st_size for path in documents)
+    official = sum(1 for path in documents if _front_matter_value(path, "source_type") == "oficial")
+    print(f"Documentos en Gold: {len(documents)}")
+    print(f"  - oficiales: {official}")
+    print(f"  - terceros:  {len(documents) - official}")
+    print(f"Caracteres: {chars:,} (aprox. {round(chars / 4):,} tokens)")
+    print(f"Índice JSONL: {'sí' if INDEX_FILE.exists() else 'no'}")
+
+
+def _front_matter_value(path: Path, key: str) -> str:
+    """Lee un campo del front matter de un Markdown Gold."""
+
+    for line in path.read_text(encoding="utf-8").splitlines()[1:20]:
+        if line.startswith("---"):
+            break
+        name, separator, value = line.partition(":")
+        if separator and name.strip() == key:
+            return value.strip()
+    return ""
 
 
 def _seeds_for(scope: str) -> tuple[str, ...]:

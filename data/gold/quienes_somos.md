@@ -1,7 +1,12 @@
 ---
 url: https://www.carvajal.com/quienes-somos/
-title: Quienes Somos
-captured_at: 2026-10-28T15:31:08.752065+00:00
+title: Quiénes somos
+section: quienes-somos
+domain: carvajal.com
+source_type: oficial
+captured_at: 2026-10-29T16:30:10.443210+00:00
+hash: b42db1856cd17adeb90cf242889bc092df37788d359975d88709cb06e0dd0e84
+chars: 1579
 ---
 
 ## Juntos

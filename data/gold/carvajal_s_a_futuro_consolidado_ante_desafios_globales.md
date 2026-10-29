@@ -1,9 +1,12 @@
 ---
 url: https://caliescribe.com/2025/04/16/carvajal-s-a-futuro-consolidado-ante-desafios-globales
-title: Carvajal S.A.: Futuro consolidado ante desafíos globales
+title: Carvajal S.A.: Futuro consolidado ante desafíos globales | Noticias de Cali, el Valle y Colombia
+section: prensa
 domain: caliescribe.com
 source_type: tercero
-captured_at: 2026-10-29T10:53:36.431947+00:00
+captured_at: 2026-10-29T16:31:25.120651+00:00
+hash: a70a830617f99d9b3463ac7046ffbdccf45c6c3aedeaeb6c7b7d9aefac1ff431
+chars: 5612
 ---
 
 # Carvajal S.A.: Futuro consolidado ante desafíos globales

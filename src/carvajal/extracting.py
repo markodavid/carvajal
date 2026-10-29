@@ -48,6 +48,22 @@ CONTENT_TAGS = (
 )
 
 
+def html_title(html: str) -> str:
+    """Extrae el título editorial del ``<title>`` del documento.
+
+    Args:
+        html: HTML crudo ya descargado.
+
+    Returns:
+        Título normalizado, o cadena vacía si el documento no declara uno.
+    """
+
+    soup = BeautifulSoup(html, "lxml")
+    if soup.title is None or not soup.title.string:
+        return ""
+    return _normalize(soup.title.string)
+
+
 def html_to_markdown(html: str) -> str:
     """Convierte HTML crudo a Markdown conservando el contenido editorial.
 

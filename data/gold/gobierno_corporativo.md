@@ -1,7 +1,12 @@
 ---
 url: https://www.carvajal.com/gobierno-corporativo/
-title: Gobierno Corporativo
-captured_at: 2026-10-28T15:32:38.758240+00:00
+title: Gobierno corporativo
+section: gobierno-corporativo
+domain: carvajal.com
+source_type: oficial
+captured_at: 2026-10-29T16:31:07.815735+00:00
+hash: 88300d4a057ce4cb642cc95db8b6d0076f4848d95ab046d79f8e117e5bf2a492
+chars: 8285
 ---
 
 ## Gobierno corporativo

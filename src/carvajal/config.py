@@ -13,6 +13,12 @@ TIMEOUT_SECONDS: int = 30
 
 GOLD_DIR: Path = Path("data") / "gold"
 INDEX_DIR: Path = Path("data") / "index"
+RAW_DIR: Path = Path("data") / "raw"  # bronze: HTML crudo
+PROCESSED_DIR: Path = Path("data") / "processed"  # silver: Markdown limpio
+INDEX_FILE: Path = GOLD_DIR / "index.jsonl"  # índice del corpus (JSONL)
+REQUEST_DELAY_SECONDS: float = 1.0  # rate limit entre peticiones por host
+RESPECT_ROBOTS: bool = True
+MIN_DEDUPE_CHARS: int = 200  # no deduplicar páginas casi vacías
 
 SEEDS: tuple[str, ...] = (
     "https://www.carvajal.com/",

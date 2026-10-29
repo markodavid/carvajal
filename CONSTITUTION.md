@@ -52,10 +52,14 @@ con asistente RAG.
   documento de terceros se marca en el *front matter* con `domain` y
   `source_type: tercero`, y el asistente está obligado a distinguirlos de las fuentes
   oficiales.
-- Mantener tres capas: **bronze** (HTML crudo), **silver** (Markdown limpio) y
-  **gold** (Markdown + *front matter* + índice JSONL).
+- Respetar `robots.txt` (incluido `Crawl-delay`) y aplicar *rate limit* por host antes
+  de cada petición.
+- Mantener tres capas materializadas en disco: **bronze** (`data/raw/`, HTML crudo),
+  **silver** (`data/processed/`, Markdown limpio) y **gold** (`data/gold/`, Markdown +
+  *front matter* + `index.jsonl`).
 - Extraer el cuerpo editorial descartando menús, formularios, modales y pie de página.
-- Versionar `data/gold/` como entregable del corpus.
+- Deduplicar por huella SHA-256 y enriquecer cada documento con sección, hash y tamaño.
+- Versionar `data/gold/` como entregable del corpus (bronze y silver se regeneran).
 - Ofrecer una CLI y un Makefile como interfaz única del proyecto.
 
 ### Fuera del alcance (por ahora)
@@ -220,6 +224,9 @@ git push
 | 2026-10-28 | Persistir el índice FAISS en `data/index/` con huella del corpus | Los embeddings en CPU tardan minutos por arranque; con caché la app abre en segundos y se invalida sola al cambiar `data/gold/` |
 | 2026-10-29 | Incorporar fuentes de terceros (`EXTERNAL_SEEDS`) al corpus | Los indicadores financieros no están en el HTML oficial (contadores JS y PDFs); la prensa económica los publica en texto y cada documento se marca con `source_type: tercero` |
 | 2026-10-29 | Adoptar Archify para el diagrama de arquitectura (`docs/arquitectura.json` → `.html`) | Documentación viva validada: el JSON tipado es la fuente, el HTML autocontenido es el artefacto que se comparte y se enlaza desde el README |
+| 2026-10-29 | Materializar las capas Bronze y Silver y añadir `index.jsonl` | El pipeline escribía solo Gold: el patrón Medallion era una promesa del informe, no del código. Ahora cada capa queda en disco y el índice JSONL permite auditar URL, sección, hash y tamaño |
+| 2026-10-29 | Respetar `robots.txt` + `Crawl-delay` y aplicar rate limit de 1 s por host | El README lo afirmaba sin implementarlo; es requisito de captura responsable y de la rúbrica |
+| 2026-10-29 | Deduplicar por SHA-256 y enriquecer con `section` y `hash` | Evita documentos repetidos al ampliar semillas y da trazabilidad por documento |
 
 ## 10. Notas y tareas pendientes
 

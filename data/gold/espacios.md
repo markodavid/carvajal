@@ -1,7 +1,12 @@
 ---
 url: https://www.carvajal.com/espacios/
 title: Espacios
-captured_at: 2026-10-28T15:32:08.113063+00:00
+section: espacios
+domain: carvajal.com
+source_type: oficial
+captured_at: 2026-10-29T16:30:55.883101+00:00
+hash: 405f123d2026c49e951cd67c250b9b8ce39fa24a1b98b601a42d394e5d2a4ad0
+chars: 3213
 ---
 
 ## Creamos

@@ -1,7 +1,12 @@
 ---
 url: https://www.carvajal.com/compromiso-etico/
 title: Compromiso Etico
-captured_at: 2026-10-28T15:32:49.298211+00:00
+section: compromiso-etico
+domain: carvajal.com
+source_type: oficial
+captured_at: 2026-10-29T16:31:12.696085+00:00
+hash: 9cecf1e8955dc7e11add6ca4fe0958165be4634291a4387c7b03fcee36c7df55
+chars: 10699
 ---
 
 ## Compromiso

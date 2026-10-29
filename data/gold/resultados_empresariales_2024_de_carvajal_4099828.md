@@ -1,9 +1,12 @@
 ---
 url: https://www.larepublica.co/empresas/resultados-empresariales-2024-de-carvajal-4099828
 title: Carvajal presentó resultados financieros y reportó ingresos por $3,9 billones en 2024
+section: prensa
 domain: larepublica.co
 source_type: tercero
-captured_at: 2026-10-29T10:53:31.122249+00:00
+captured_at: 2026-10-29T16:31:15.931173+00:00
+hash: c8e2dfda9c231c01391da50ca43d073f31c7d82001a2587934fbe8f016644657
+chars: 4342
 ---
 
 ## Carvajal presentó resultados financieros y reportó ingresos por $3,9 billones en 2024

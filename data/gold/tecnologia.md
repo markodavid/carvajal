@@ -1,7 +1,12 @@
 ---
 url: https://www.carvajal.com/tecnologia/
-title: Tecnologia
-captured_at: 2026-10-28T15:31:32.581732+00:00
+title: Tecnología y Servicios
+section: tecnologia
+domain: carvajal.com
+source_type: oficial
+captured_at: 2026-10-29T16:30:42.708592+00:00
+hash: 25bee6df9c821a92a1f72ed14d74a4704ae3596f37df5746f574bf9eb299616e
+chars: 1185
 ---
 
 Carvajal Tecnología y Servicios

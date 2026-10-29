@@ -1,9 +1,12 @@
 ---
 url: https://www.larepublica.co/empresas/carvajal-reporto-ingresos-por-2-58-billones-a-septiembre-de-2025-4269762
 title: La Organización Carvajal reportó ingresos por $2,58 billones a septiembre de 2025
+section: prensa
 domain: larepublica.co
 source_type: tercero
-captured_at: 2026-10-29T10:53:31.629863+00:00
+captured_at: 2026-10-29T16:31:16.146636+00:00
+hash: 5f12a8cdb474d4dc818cd9a4f26e428495d8827995519c1b80be1d789d315ee5
+chars: 3653
 ---
 
 ## La Organización Carvajal reportó ingresos por $2,58 billones a septiembre de 2025
@@ -46,28 +49,28 @@ Al cierre de septiembre, el margen bruto consolidado se ubicó en 30%, en línea
 
 ## MÁS DE EMPRESAS
 
-## Las trabas que están frenando el uso de los drones dentro de la seguridad privada
+## La Andi comunicó que aún no hay humo blanco en búsqueda de su próximo presidente
 
-Las empresas deben cumplir al menos siete requisitos ante dos entidades, mientras los grupos criminales adaptan equipos comerciales para cometer ataques.
+La Asociación aseguró que hasta que se concrete la elección de un nuevo presidente, la Junta de Dirección General y su Mesa Directiva estarán al frente
 
-## Tesla y marcas chinas tienen alrededor de 86% del mercado de carros eléctricos
+## Terpel y Colgas buscan llegar a 55 estaciones de servicio con AutoGLP para el otro año
 
-De enero a septiembre, Tesla registró 16.542 matrículas de vehículos eléctricos, mientras que las marcas chinas y MG, de capital chino, sumaron otras 17.585 unidades
+Las compañías proyectan comercializar 13 millones de litros de este combustible al cierre de 2026 y ofrecer aportes económicos con el fin de facilitar la conversión de vehículos
 
-## Metropolitan Printer y Legis Editores piden entrar en proceso de reorganización
+## Este es el ranking de las cadenas de fast food colombianas que tienen más trayectoria del país
 
-Las compañías hicieron esta petición a la Superintendencia de Sociedades debido a la cesación de pagos y su situación de sus pasivos
+Estas marcas que abrieron el camino para categorías como hamburguesas, pizza y pollo facturan más de $2 billones
 
 ### MÁS DE LA REPÚBLICA
 
-## Apple lanza su primer MacBook táctil y deja atrás la visión de Steve Jobs
+## Gobierno anunció más de 2.700 casas para damnificados del terremoto en Panamá
 
-## Estas son todas las etapas del calvario que marcó el trámite de la reforma pensional
+## “El país tiene una exposición relevante a inversiones corrosivas y a sus riesgos”
 
-## KOA entró a la Bolsa de Colombia como emisor de CDT con más de 18.000 clientes
+## Las tasas de compra de la cartera de las tarjeta de crédito inician en 12% y van a 28,59%
 
-## ¿Cuánto cuesta viajar a Barranquilla para presenciar la final de la Copa Sudamericana?
+## Megaland Bacano cambia de escenario y se traslada al Vive Claro por la gramilla de El Campín
 
-## Denuncian a Petro ante la Comisión de Acusaciones por plan para afectar las elecciones
+## Migración Colombia expulsó a 98 venezolanos de Medellín por riesgos a la seguridad
 
-## Cómo distribuir la prima de fin de año para comenzar 2027 con mayor tranquilidad
+## Team-Up Sports, la apuesta de T-Mapp para conectar a las marcas junto con los clubes deportivos

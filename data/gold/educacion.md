@@ -1,7 +1,12 @@
 ---
 url: https://www.carvajal.com/educacion/
-title: Educacion
-captured_at: 2026-10-28T15:31:48.047457+00:00
+title: Educación
+section: educacion
+domain: carvajal.com
+source_type: oficial
+captured_at: 2026-10-29T16:30:49.128278+00:00
+hash: 48a67513de763676fb870c2f4de789c4fcf39ff525ce5f16564465499e83f9cd
+chars: 1649
 ---
 
 Carvajal Educación.

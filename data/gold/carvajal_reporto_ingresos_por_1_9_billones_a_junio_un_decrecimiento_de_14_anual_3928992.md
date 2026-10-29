@@ -1,9 +1,12 @@
 ---
 url: https://www.larepublica.co/empresas/carvajal-reporto-ingresos-por-1-9-billones-a-junio-un-decrecimiento-de-14-anual-3928992
 title: Carvajal reportó ingresos por $1,9 billones a junio, un decrecimiento de 14% anual
+section: prensa
 domain: larepublica.co
 source_type: tercero
-captured_at: 2026-10-29T10:53:32.284618+00:00
+captured_at: 2026-10-29T16:31:18.227854+00:00
+hash: 563ecd3f6f5f2f53e4af2495a7e951de8766369a5f8d2dc030745cb6095cbc5a
+chars: 3835
 ---
 
 ## Carvajal reportó ingresos por $1,9 billones a junio, un decrecimiento de 14% anual

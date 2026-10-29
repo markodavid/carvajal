@@ -1,7 +1,12 @@
 ---
 url: https://www.carvajal.com/inversionistas/inicio/
 title: Inicio
-captured_at: 2026-10-28T15:32:30.142149+00:00
+section: inversionistas
+domain: carvajal.com
+source_type: oficial
+captured_at: 2026-10-29T16:31:03.138110+00:00
+hash: 514880a6adfaed593e650d6f36e2369b878c613d4ef73ca08c05348c27074112
+chars: 2167
 ---
 
 Únete a

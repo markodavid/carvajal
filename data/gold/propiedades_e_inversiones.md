@@ -1,7 +1,12 @@
 ---
 url: https://www.carvajal.com/propiedades-e-inversiones/
-title: Propiedades E Inversiones
-captured_at: 2026-10-28T15:32:16.564908+00:00
+title: Propiedades e Inversiones
+section: propiedades-e-inversiones
+domain: carvajal.com
+source_type: oficial
+captured_at: 2026-10-29T16:30:58.406358+00:00
+hash: 7bfd82bffd0db180d92277212cb7ae66a807eb67093940be94e7b040b3383370
+chars: 1661
 ---
 
 ## Generamos experiencias confortables, con la administración de

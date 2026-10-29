@@ -1,7 +1,12 @@
 ---
 url: https://www.carvajal.com/comunicacion/
-title: Comunicacion
-captured_at: 2026-10-28T15:31:58.306265+00:00
+title: Soluciones de Comunicación
+section: comunicacion
+domain: carvajal.com
+source_type: oficial
+captured_at: 2026-10-29T16:30:52.264674+00:00
+hash: 9cf0c5c77ccd7da7b44527c2dbb8b8b241b3b0824fd5f54c7a40a4ae8ecc456a
+chars: 2156
 ---
 
 Carvajal Soluciones de Comunicación

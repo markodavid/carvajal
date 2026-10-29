@@ -1,7 +1,12 @@
 ---
 url: https://www.carvajal.com/proposito-superior/
-title: Proposito Superior
-captured_at: 2026-10-28T15:31:18.633993+00:00
+title: Propósito Superior
+section: proposito-superior
+domain: carvajal.com
+source_type: oficial
+captured_at: 2026-10-29T16:30:24.960379+00:00
+hash: 7f393377f6644f310e39fc8a2d9d59786fba4b64e445732faf6eeab43a5c6da9
+chars: 905
 ---
 
 ## Nuestro

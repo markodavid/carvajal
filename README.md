@@ -44,6 +44,31 @@ sin depender de una API del sitio.
 Los documentos de terceros se marcan en el *front matter* con `source_type: tercero`, y
 el asistente está instruido para atribuir cada cifra a su medio y fecha.
 
+## Pipeline de captura
+
+```text
+semillas (21 URLs)
+   │  robots.txt + rate limit (1 s/host) + User-Agent propio + timeout 30 s
+   ▼
+Bronze  data/raw/*.html          HTML crudo, tal como llegó
+   ▼
+Silver  data/processed/*.md      Markdown limpio (sin menús, header ni footer)
+   ▼
+Gold    data/gold/*.md           Markdown + front matter (url, title, section,
+                                 domain, source_type, captured_at, hash, chars)
+   ▼
+Índice  data/gold/index.jsonl    una línea por documento (URL, sección, hash, tokens)
+```
+
+- **Deduplicación** por huella SHA-256 del contenido; las páginas casi vacías
+  (< 200 caracteres) no se deduplican para no perder secciones distintas.
+- **Enriquecimiento**: `section` se deriva de la URL del sitio oficial (`inversionistas`,
+  `quienes-somos`…) y es `prensa` en las fuentes de terceros; `hash` y `chars` describen
+  cada documento.
+- **Métricas**: al terminar, `carvajal capture` reporta descubiertas, descargadas,
+  escritas, descartadas (robots, duplicadas, errores), caracteres, tokens estimados y
+  duración.
+
 ## 🗺️ Arquitectura
 
 Diagrama interactivo autocontenido (generado con [Archify](https://github.com/tt-a1i/archify)):
@@ -69,13 +94,18 @@ uv sync
 
 ```bash
 # Capturar el sitio oficial y las fuentes de terceros
+# (descubrir → extraer → limpiar → deduplicar → enriquecer)
 uv run carvajal capture
 
 # Solo el sitio oficial / solo fuentes de terceros
 uv run carvajal capture --scope oficial
 uv run carvajal capture --scope terceros
 
-# Ver el estado del corpus
+# Ajustar el rate limit o ignorar robots.txt (solo pruebas locales)
+uv run carvajal capture --delay 2.0
+uv run carvajal capture --ignore-robots
+
+# Ver el estado del corpus (documentos, origen, tokens, índice)
 uv run carvajal status
 
 # Listar semillas

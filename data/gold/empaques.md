@@ -1,7 +1,12 @@
 ---
 url: https://www.carvajal.com/empaques/
 title: Empaques
-captured_at: 2026-10-28T15:31:28.449095+00:00
+section: empaques
+domain: carvajal.com
+source_type: oficial
+captured_at: 2026-10-29T16:30:37.066741+00:00
+hash: 50ac6f49964920f4193d59bbd194b0e2346cada59808d7d052a5ab4e43e0bb12
+chars: 3052
 ---
 
 Carvajal Empaques

@@ -34,3 +34,22 @@ def test_to_gold_markdown_registra_procedencia() -> None:
     assert "source_type: tercero" in markdown
     assert "captured_at:" in markdown
     assert markdown.rstrip().endswith("Cuerpo.")
+
+
+def test_to_gold_markdown_incluye_seccion_hash_y_tamano() -> None:
+    """El front matter añade sección editorial, huella y número de caracteres."""
+
+    page = _page("https://www.carvajal.com/inversionistas/inicio/")
+
+    markdown = to_gold_markdown(page, "Inicio")
+
+    assert "section: inversionistas" in markdown
+    assert f"hash: {page.content_hash}" in markdown
+    assert f"chars: {len(page.markdown)}" in markdown
+
+
+def test_section_de_terceros_es_prensa() -> None:
+    """Las fuentes externas se agrupan en la sección ``prensa``."""
+
+    assert _page("https://www.elpais.com.co/economia/nota-0239.html").section == "prensa"
+    assert _page("https://www.carvajal.com/").section == "home"

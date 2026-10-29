@@ -23,8 +23,10 @@ htmlcov/
 
 # Datos del corpus: capas crudas (bronze) y procesadas (silver) se ignoran;
 # el entregable versionado es data/gold/ (capa gold).
-data/raw/
-data/processed/
+data/raw/*
+data/processed/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
 
 # Índice vectorial FAISS (se regenera desde data/gold/ con `make app` o `carvajal ask`)
 data/index/

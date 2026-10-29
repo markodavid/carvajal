@@ -1,7 +1,12 @@
 ---
 url: https://www.carvajal.com/
-title: Www.Carvajal.Com
-captured_at: 2026-10-28T15:31:06.074407+00:00
+title: Carvajal S.A.
+section: home
+domain: carvajal.com
+source_type: oficial
+captured_at: 2026-10-29T16:30:07.515033+00:00
+hash: 5d42f43c202dfbcce069cd6ea342380024d663c3fff4d0cafe32b30d26cbc075
+chars: 2085
 ---
 
 ## Hacer las cosas bien es crear valor
