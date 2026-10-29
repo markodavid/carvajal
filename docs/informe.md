@@ -151,7 +151,8 @@ temperatura 0.
 - **Pipeline de scraping**: ejecuta la captura y muestra en pantalla las siete etapas
   (descubrir, `robots.txt`, descargar, extraer, deduplicar, enriquecer, indexar), el log
   por URL y las métricas de la corrida: descubiertas, descargadas, escritas, descartadas
-  con su motivo, caracteres, tokens estimados y duración.
+  con su motivo, caracteres, tokens estimados y duración. Un **diagrama de bloques**
+  ilumina cada etapa al avanzar el proceso (gris = pendiente, color = activa, ✓ = hecha).
 - **Asistente**: pregunta → respuesta con **fuentes citadas** (dominio, tipo de fuente y
   fragmento recuperado). Advierte si el índice vectorial está desactualizado.
 

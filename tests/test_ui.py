@@ -4,9 +4,12 @@ from carvajal.config import EXTERNAL_SEEDS, SEEDS
 from carvajal.pipeline import CaptureEvent, CaptureReport
 from carvajal.ui import (
     STAGE_LABELS,
+    STAGE_SEQUENCE,
+    advance_stage,
     corpus_metrics,
     discarded_rows,
     format_event,
+    render_diagram,
     report_metrics,
     scope_seeds,
 )
@@ -103,3 +106,53 @@ def _document(url: str, source_type: str):
     from langchain_core.documents import Document
 
     return Document(page_content="contenido", metadata={"url": url, "source_type": source_type})
+
+
+def test_render_diagram_marca_las_siete_etapas() -> None:
+    """El diagrama siempre dibuja las siete etapas, en orden."""
+
+    html = render_diagram({})
+
+    assert html.count("cv-stage") >= 7
+    for position, stage in enumerate(STAGE_SEQUENCE, start=1):
+        assert STAGE_LABELS[stage].split(" · ")[-1] in html
+        assert f'<span class="cv-idx">{position}</span>' in html
+
+
+def test_render_diagram_refleja_el_estado() -> None:
+    """Cada estado se ve distinto: pendiente, activo, listo y error."""
+
+    pendiente = render_diagram({})
+    assert "border:1px dashed #C9D2DE" in pendiente
+
+    activo = render_diagram({"descargar": "activo"})
+    assert "cv-stage-activo" in activo
+
+    listo = render_diagram({"descargar": "listo"})
+    assert "✓" in listo and "cv-stage-activo" not in listo
+
+    error = render_diagram({"descargar": "error"})
+    assert "#B3261E" in error
+
+
+def test_advance_stage_cierra_la_etapa_anterior() -> None:
+    """Al entrar en una etapa nueva, la anterior queda completada."""
+
+    states: dict[str, str] = {}
+
+    advance_stage(states, "descubrir")
+    assert states["descubrir"] == "activo"
+
+    advance_stage(states, "robots")
+    assert states["descubrir"] == "listo"
+    assert states["robots"] == "activo"
+
+
+def test_advance_stage_ignora_etapas_desconocidas() -> None:
+    """Un evento de una etapa que no está en el diagrama no rompe el estado."""
+
+    states = {"descubrir": "activo"}
+
+    advance_stage(states, "etapa-inexistente")
+
+    assert states == {"descubrir": "activo"}

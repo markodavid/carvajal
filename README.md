@@ -153,13 +153,22 @@ La captura es idempotente: si el contenido de una página no cambia, su `hash` s
 
 ### Capturas
 
-**Pipeline de scraping** — corpus actual y ejecución por etapas:
+**Pipeline de scraping** — el diagrama de bloques se ilumina etapa por etapa mientras corre la
+captura (naranja = etapa activa, verde = completada, gris = pendiente):
 
-[![Pestaña Pipeline](docs/ui-pipeline.png)](docs/ui-pipeline.png)
+[![Pestaña Pipeline en ejecución](docs/ui-pipeline.png)](docs/ui-pipeline.png)
+
+**Métricas de la captura** — las siete etapas completadas y el resumen de la corrida:
+
+[![Métricas de la captura](docs/ui-metricas.png)](docs/ui-metricas.png)
 
 **Asistente** — respuesta con fuentes citadas y atribución oficial/tercero:
 
 [![Pestaña Asistente](docs/ui-asistente.png)](docs/ui-asistente.png)
+
+La identidad visual usa el **logo oficial en SVG** (`assets/carvajal-logo.svg`) y la paleta
+de marca del sitio (`#00B5E5`, `#80A41B`, `#ED7004`, `#62358C`, `#003A5D`, `#015625`),
+configurada en `.streamlit/config.toml` e inyectada como CSS en la app.
 
 ## Configuración del LLM
 

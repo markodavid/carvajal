@@ -1,6 +1,9 @@
-"""Interfaz web (Streamlit): pipeline de scraping visible y asistente RAG."""
+"""Interfaz web (Streamlit): pipeline visible con identidad de Carvajal y asistente RAG."""
 
+import base64
 from dataclasses import dataclass
+from functools import lru_cache
+from pathlib import Path
 from types import ModuleType
 
 import streamlit as st
@@ -11,19 +14,22 @@ from carvajal.corpus import load_gold_documents
 from carvajal.fetching import WebClient
 from carvajal.pipeline import CaptureEvent, CaptureReport, capture
 
+LOGO_PATH = Path("assets") / "carvajal-logo.svg"
 
-def _rag() -> ModuleType:
-    """Importa el stack RAG solo cuando se usa.
-
-    ``langchain``, ``faiss`` y los clientes de LLM tardan ~50 s en importarse en este
-    equipo, así que mantenerlos fuera del arranque deja la pestaña del pipeline
-    disponible de inmediato.
-    """
-
-    from carvajal import rag
-
-    return rag
-
+# Paleta tomada del sitio oficial (tokens de Elementor y colores del logo).
+BRAND = {
+    "cian": "#00B5E5",
+    "oliva": "#80A41B",
+    "naranja": "#ED7004",
+    "morado": "#62358C",
+    "morado_oscuro": "#61368C",
+    "azul": "#003A5D",
+    "azul_profundo": "#004568",
+    "verde": "#015625",
+    "verde_medio": "#188D40",
+    "rojo": "#D7510C",
+    "error": "#B3261E",
+}
 
 SCOPE_OPTIONS = {
     "Todo el corpus (21 URLs)": "todo",
@@ -40,6 +46,144 @@ STAGE_LABELS = {
     "enriquecer": "6 · Enriquecer metadatos",
     "indice": "7 · Escribir índice",
 }
+
+STAGE_SEQUENCE = tuple(STAGE_LABELS)
+
+STAGE_COLORS = {
+    "descubrir": BRAND["cian"],
+    "robots": BRAND["oliva"],
+    "descargar": BRAND["azul"],
+    "extraer": BRAND["morado"],
+    "deduplicar": BRAND["naranja"],
+    "enriquecer": BRAND["verde"],
+    "indice": BRAND["rojo"],
+}
+
+STAGE_ICONS = {"pendiente": "○", "activo": "◐", "listo": "✓", "error": "!"}
+
+
+@lru_cache(maxsize=1)
+def logo_data_uri() -> str:
+    """Devuelve el logo de Carvajal embebido como ``data:`` URI."""
+
+    if not LOGO_PATH.exists():
+        return ""
+    encoded = base64.b64encode(LOGO_PATH.read_bytes()).decode("ascii")
+    return f"data:image/svg+xml;base64,{encoded}"
+
+
+def brand_header() -> None:
+    """Dibuja el encabezado con el logo y la paleta de Carvajal."""
+
+    logo = logo_data_uri()
+    st.markdown(
+        f"""
+        <div class="cv-header">
+          <img class="cv-logo" src="{logo}" alt="Carvajal" />
+          <div class="cv-titles">
+            <h1>Corpus web y asistente</h1>
+            <p>Scraping visible por etapas · RAG con fuentes citadas ·
+               modelo <code>{LLM_PROVIDER}</code></p>
+          </div>
+        </div>
+        <div class="cv-bands">
+          <span style="background:{BRAND["cian"]}"></span>
+          <span style="background:{BRAND["oliva"]}"></span>
+          <span style="background:{BRAND["naranja"]}"></span>
+          <span style="background:{BRAND["morado"]}"></span>
+          <span style="background:{BRAND["azul"]}"></span>
+          <span style="background:{BRAND["verde"]}"></span>
+          <span style="background:{BRAND["rojo"]}"></span>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+def brand_css() -> None:
+    """Inyecta los estilos de la marca y del diagrama de bloques."""
+
+    st.markdown(
+        f"""
+        <style>
+        .cv-header {{ display:flex; align-items:center; gap:22px; padding:4px 0 10px; }}
+        .cv-logo {{ height:52px; width:auto; }}
+        .cv-titles h1 {{ font-size:1.65rem; margin:0; color:{BRAND["azul"]}; }}
+        .cv-titles p {{ margin:2px 0 0; color:#5B6B7F; font-size:0.86rem; }}
+        .cv-bands {{ display:flex; gap:4px; margin-bottom:14px; }}
+        .cv-bands span {{ height:5px; flex:1; border-radius:3px; }}
+        .cv-diagram {{ display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin:6px 0; }}
+        .cv-stage {{ flex:1 1 118px; min-width:112px; border-radius:10px; padding:9px 8px;
+                     text-align:center; font-size:0.78rem; font-weight:600; line-height:1.25; }}
+        .cv-stage .cv-idx {{ display:block; font-size:0.64rem; opacity:0.75; }}
+        .cv-stage .cv-ic {{ display:block; font-size:0.9rem; margin-top:2px; }}
+        .cv-arrow {{ color:#B9C4D2; font-size:0.9rem; }}
+        .cv-caption {{ font-size:0.75rem; color:#5B6B7F; margin-top:2px; }}
+        @keyframes cv-pulse {{ 0%{{opacity:1;}} 50%{{opacity:0.72;}} 100%{{opacity:1;}} }}
+        .cv-stage-activo {{ animation:cv-pulse 1.1s ease-in-out infinite; }}
+        div[data-testid="stMetricValue"] {{ color:{BRAND["azul"]}; }}
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+def advance_stage(states: dict[str, str], stage: str) -> dict[str, str]:
+    """Marca la etapa como activa y la anterior como completada.
+
+    Args:
+        states: Estado actual por etapa (``pendiente``, ``activo``, ``listo`` o ``error``).
+        stage: Etapa que acaba de emitir un evento.
+
+    Returns:
+        El mismo diccionario, actualizado.
+    """
+
+    if stage not in STAGE_SEQUENCE:
+        return states
+    position = STAGE_SEQUENCE.index(stage)
+    for earlier in STAGE_SEQUENCE[:position]:
+        if states.get(earlier) == "activo":
+            states[earlier] = "listo"
+    states[stage] = "activo"
+    return states
+
+
+def render_diagram(states: dict[str, str], caption: str = "") -> str:
+    """Construye el HTML del diagrama de bloques del pipeline.
+
+    Args:
+        states: Estado por etapa.
+        caption: Texto de apoyo bajo el diagrama.
+
+    Returns:
+        HTML listo para ``st.markdown``.
+    """
+
+    blocks: list[str] = []
+    for position, stage in enumerate(STAGE_SEQUENCE, start=1):
+        status = states.get(stage, "pendiente")
+        color = STAGE_COLORS[stage]
+        if status == "pendiente":
+            style = "background:#FFFFFF;color:#8A94A6;border:1px dashed #C9D2DE;"
+            css_class = ""
+        elif status == "error":
+            style = f"background:{BRAND['error']};color:#FFFFFF;border:1px solid {BRAND['error']};"
+            css_class = ""
+        else:
+            style = f"background:{color};color:#FFFFFF;border:1px solid {color};"
+            css_class = " cv-stage-activo" if status == "activo" else ""
+        label = STAGE_LABELS[stage].split(" · ")[-1]
+        blocks.append(
+            f'<div class="cv-stage{css_class}" style="{style}">'
+            f'<span class="cv-idx">{position}</span>{label}'
+            f'<span class="cv-ic">{STAGE_ICONS[status]}</span></div>'
+        )
+        if position < len(STAGE_SEQUENCE):
+            blocks.append('<span class="cv-arrow">▸</span>')
+
+    caption_html = f'<div class="cv-caption">{caption}</div>' if caption else ""
+    return f'<div class="cv-diagram">{"".join(blocks)}</div>{caption_html}'
 
 
 @dataclass(frozen=True)
@@ -132,6 +276,12 @@ def render_pipeline_tab(documents: list[Document]) -> None:
         respect_robots = st.checkbox("Respetar robots.txt", value=True)
         submitted = st.form_submit_button("Ejecutar captura")
 
+    diagram = st.empty()
+    diagram.markdown(
+        render_diagram({}, "Las etapas se iluminan a medida que avanza la captura."),
+        unsafe_allow_html=True,
+    )
+
     if not submitted:
         st.caption("Las métricas se actualizan al ejecutar la captura.")
         return
@@ -141,19 +291,36 @@ def render_pipeline_tab(documents: list[Document]) -> None:
     progress = st.progress(0.0)
     log = st.empty()
     lines: list[str] = []
+    states: dict[str, str] = {}
+    processed = 0
 
     with st.status("Ejecutando pipeline…", expanded=True) as status:
 
         def on_event(event: CaptureEvent) -> None:
+            nonlocal processed
             formatted = format_event(event)
             lines.append(f"{formatted.stage}: {formatted.detail}")
-            log.code("\n".join(lines[-12:]), language="text")
+            log.code("\n".join(lines[-10:]), language="text")
+            advance_stage(states, event.stage)
+            if event.stage == "enriquecer":
+                processed += 1
+            caption = f"Etapa {STAGE_SEQUENCE.index(event.stage) + 1} de 7"
+            if event.url:
+                caption += f" · {event.url.replace('https://', '')}"
+            if processed:
+                caption += f" · {processed} página(s) procesadas"
+            diagram.markdown(render_diagram(states, caption), unsafe_allow_html=True)
             progress.progress(min(len(lines) / total_steps, 1.0))
 
-        report = capture(
-            seeds,
-            on_event=on_event,
-            client=_client(respect_robots),
+        report = capture(seeds, on_event=on_event, client=_client(respect_robots))
+        for stage in STAGE_SEQUENCE:
+            states[stage] = "listo"
+        diagram.markdown(
+            render_diagram(
+                states,
+                f"Captura completada: {report.written} documento(s) en {report.duration_seconds} s",
+            ),
+            unsafe_allow_html=True,
         )
         status.update(
             label=f"Captura completada en {report.duration_seconds} s",
@@ -223,6 +390,19 @@ def render_assistant_tab(documents: list[Document]) -> None:
                 st.caption(document.page_content[:400].replace("\n", " ") + "…")
 
 
+def _rag() -> ModuleType:
+    """Importa el stack RAG solo cuando se usa.
+
+    ``langchain``, ``faiss`` y los clientes de LLM tardan decenas de segundos en importarse
+    en este equipo, así que mantenerlos fuera del arranque deja la pestaña del pipeline
+    disponible de inmediato.
+    """
+
+    from carvajal import rag
+
+    return rag
+
+
 def _answer(question: str, documents: list[Document]) -> tuple[str, list[Document]]:
     """Resuelve la pregunta usando el retriever cacheado en la sesión."""
 
@@ -244,9 +424,13 @@ def _answer(question: str, documents: list[Document]) -> tuple[str, list[Documen
 def main() -> None:
     """Punto de entrada de la interfaz Streamlit."""
 
-    st.set_page_config(page_title="Carvajal — Corpus y asistente", layout="wide")
-    st.title("Carvajal — Corpus web y asistente")
-    st.caption(f"Scraping visible + RAG sobre el corpus · modelo: `{LLM_PROVIDER}`")
+    st.set_page_config(
+        page_title="Carvajal — Corpus y asistente",
+        page_icon="🟢",
+        layout="wide",
+    )
+    brand_css()
+    brand_header()
 
     documents = load_gold_documents()
     pipeline_tab, assistant_tab = st.tabs(["Pipeline de scraping", "Asistente"])
