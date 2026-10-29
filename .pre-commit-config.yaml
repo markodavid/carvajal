@@ -10,6 +10,10 @@ default_language_version:
 minimum_pre_commit_version: "3.7.0"
 fail_fast: false
 
+# Artefactos generados: los produce Archify (`docs/arquitectura.html`) o la captura
+# (`data/raw`, `data/processed`). No se normalizan a mano porque se regeneran.
+exclude: ^(docs/arquitectura.*\.html|data/raw/|data/processed/)
+
 repos:
   # --- Higiene general de archivos ---
   - repo: https://github.com/pre-commit/pre-commit-hooks
