@@ -14,6 +14,24 @@ Convertir las páginas públicas del sitio web de Carvajal en un corpus Markdown
 citable, reproducible y listo para un pipeline de RAG, respetando `robots.txt` y
 sin depender de una API del sitio.
 
+## Problema y solución
+
+**Problema.** Responder preguntas sobre una empresa exige un corpus fiable: los datos
+están dispersos en el sitio corporativo, algunos indicadores solo se publican en PDFs o
+detrás de contadores JavaScript, y cualquier modelo sin contexto inventa cifras.
+
+**Solución.** Un pipeline reproducible que captura el sitio oficial y fuentes de prensa,
+los normaliza en tres capas (bronze → silver → gold), los indexa con embeddings locales
+y responde con un LLM **citando la fuente y distinguiendo** lo oficial de lo publicado por
+terceros. Todo se demuestra en una interfaz con el scraping visible etapa por etapa.
+
+| Antes | Después |
+|---|---|
+| Corpus de 2.45 MB con menús duplicados | **64.5 KB** de texto editorial tras corregir el extractor |
+| Sin indicadores financieros (solo PDFs/JS) | **21 documentos** con ingresos, EBITDA, márgenes y empleo |
+| Respuestas sin trazabilidad | Cada respuesta **cita medio, fecha y tipo de fuente** |
+| Arranque de la app en ~5 min (embeddings) | **Segundos**, con índice persistido e invalidación por hash |
+
 ## Stack
 
 | Categoría | Tecnología |
@@ -133,6 +151,16 @@ make eval
 La captura es idempotente: si el contenido de una página no cambia, su `hash` se repite y el
 índice FAISS **no se invalida**, así que se puede ejecutar la demo sin esperar la reconstrucción.
 
+### Capturas
+
+**Pipeline de scraping** — corpus actual y ejecución por etapas:
+
+[![Pestaña Pipeline](docs/ui-pipeline.png)](docs/ui-pipeline.png)
+
+**Asistente** — respuesta con fuentes citadas y atribución oficial/tercero:
+
+[![Pestaña Asistente](docs/ui-asistente.png)](docs/ui-asistente.png)
+
 ## Configuración del LLM
 
 Copia el archivo de ejemplo y completa tu clave (`.env` está en `.gitignore`):
@@ -225,6 +253,20 @@ carvajal/
 ## Contribución
 
 Lee [`CONTRIBUTING.md`](CONTRIBUTING.md) y la [`CONSTITUTION.md`](CONSTITUTION.md).
+
+## Créditos
+
+- **Autor:** Marko David García — proyecto del curso *Taller de Aplicaciones de IA y
+  Machine Learning* (UAO).
+- **Corpus:** contenido público de [carvajal.com](https://www.carvajal.com), citado con su
+  URL y fecha de captura. Las cifras financieras provienen de
+  [La República](https://www.larepublica.co), [El País](https://www.elpais.com.co) y
+  [Caliescribe](https://caliescribe.com), y se atribuyen en cada respuesta.
+- **Herramientas:** [uv](https://docs.astral.sh/uv/), [Ruff](https://docs.astral.sh/ruff/),
+  [ty](https://github.com/astral-sh/ty), [LangChain](https://www.langchain.com/),
+  [FAISS](https://github.com/facebookresearch/faiss),
+  [Streamlit](https://streamlit.io/), [Ollama](https://ollama.com/),
+  [DeepSeek](https://www.deepseek.com/) y [Archify](https://github.com/tt-a1i/archify).
 
 ## Licencia
 
