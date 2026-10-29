@@ -51,7 +51,8 @@ def to_gold_markdown(page: CapturedPage, title: str) -> str:
         f"chars: {len(page.markdown)}\n"
         f"---\n"
     )
-    return f"{front_matter}\n{page.markdown.strip()}\n"
+    body = page.markdown.strip()
+    return f"{front_matter}\n{body}\n" if body else front_matter
 
 
 def index_entry(page: CapturedPage, title: str) -> dict[str, str | int]:
@@ -91,7 +92,8 @@ def write_silver(page: CapturedPage, processed_dir: Path) -> Path:
 
     processed_dir.mkdir(parents=True, exist_ok=True)
     target = processed_dir / f"{page.slug}.md"
-    target.write_text(page.markdown.strip() + "\n", encoding="utf-8")
+    body = page.markdown.strip()
+    target.write_text(f"{body}\n" if body else "", encoding="utf-8")
     return target
 
 

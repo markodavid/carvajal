@@ -1,6 +1,8 @@
 """Pruebas del entregable Gold (front matter y procedencia)."""
 
-from carvajal.gold import domain_of, source_type, to_gold_markdown
+from pathlib import Path
+
+from carvajal.gold import domain_of, source_type, to_gold_markdown, write_gold
 from carvajal.models import CapturedPage
 
 
@@ -53,3 +55,28 @@ def test_section_de_terceros_es_prensa() -> None:
 
     assert _page("https://www.elpais.com.co/economia/nota-0239.html").section == "prensa"
     assert _page("https://www.carvajal.com/").section == "home"
+
+
+def test_to_gold_markdown_pagina_vacia_termina_en_un_salto() -> None:
+    """Una página sin cuerpo no deja una línea en blanco al final del archivo."""
+
+    page = CapturedPage(
+        url="https://www.carvajal.com/sostenibilidad/",
+        html="<html></html>",
+        markdown="",
+    )
+
+    markdown = to_gold_markdown(page, "Sostenibilidad")
+
+    assert markdown.endswith("---\n")
+    assert not markdown.endswith("\n\n")
+
+
+def test_write_gold_pagina_vacia_no_deja_linea_en_blanco(tmp_path: Path) -> None:
+    """El archivo Gold escrito para una página vacía acaba en un único salto."""
+
+    page = CapturedPage(url="https://www.carvajal.com/sostenibilidad/", html="", markdown="")
+
+    target = write_gold(page, title="Sostenibilidad", gold_dir=tmp_path)
+
+    assert target.read_text(encoding="utf-8").endswith("---\n")
