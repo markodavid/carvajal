@@ -5,7 +5,7 @@ from urllib.robotparser import RobotFileParser
 import pytest
 
 from carvajal.config import USER_AGENT
-from carvajal.fetching import RobotsDenied, WebClient, normalize_robots
+from carvajal.fetching import FetchError, RobotsDenied, WebClient, normalize_robots
 
 
 def _parser(*lines: str) -> RobotFileParser:
@@ -45,6 +45,22 @@ def test_fetch_lanza_robots_denied(monkeypatch: pytest.MonkeyPatch) -> None:
 
     with pytest.raises(RobotsDenied):
         client.fetch("https://www.carvajal.com/privado/secreto")
+
+
+def test_fetch_convierte_timeout_en_fetch_error(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Un timeout de red se reporta como ``FetchError`` y no tumba la captura."""
+
+    import requests
+
+    client = WebClient(delay=0.0, respect_robots=False)
+
+    def falla(url: str, timeout: int) -> None:
+        raise requests.Timeout("read timed out")
+
+    monkeypatch.setattr(client.session, "get", falla)
+
+    with pytest.raises(FetchError, match="timed out"):
+        client.fetch("https://www.carvajal.com/historia/")
 
 
 def test_ignore_robots_permite_todo() -> None:

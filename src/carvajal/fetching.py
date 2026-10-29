@@ -141,8 +141,11 @@ class WebClient:
         if not self.can_fetch(url):
             raise RobotsDenied(f"robots.txt excluye {url}")
         self._throttle(url)
-        response = self.session.get(url, timeout=self.timeout)
-        response.raise_for_status()
+        try:
+            response = self.session.get(url, timeout=self.timeout)
+            response.raise_for_status()
+        except requests.RequestException as error:
+            raise FetchError(f"{url}: {error}") from error
         return response.text
 
     def _load_robots(self, url: str) -> RobotFileParser:
