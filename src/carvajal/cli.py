@@ -1,6 +1,7 @@
-"""Interfaz de línea de comandos: capture / ask / eval / status / list."""
+"""Interfaz de línea de comandos: capture / ask / summarize / faq / eval / status / list."""
 
 import argparse
+from datetime import UTC, datetime
 from pathlib import Path
 
 from carvajal.config import (
@@ -23,8 +24,10 @@ from carvajal.rag import (
     build_retriever,
     build_system_prompt,
     evaluate,
+    generate_faq,
     load_questions,
     render_results_markdown,
+    summarize,
 )
 
 
@@ -100,6 +103,33 @@ def build_parser() -> argparse.ArgumentParser:
         help="Archivo Markdown donde se escriben los resultados.",
     )
 
+    summarize_parser = subparsers.add_parser(
+        "summarize",
+        help="Genera un resumen ejecutivo del corpus (tarea de LLM).",
+    )
+    summarize_parser.add_argument(
+        "--output",
+        type=Path,
+        default=Path("docs") / "resumen.md",
+        help="Archivo Markdown donde se escribe el resumen.",
+    )
+    summarize_parser.add_argument(
+        "--focus",
+        default=None,
+        help="Tema opcional sobre el que centrar el resumen.",
+    )
+
+    faq_parser = subparsers.add_parser(
+        "faq",
+        help="Genera una FAQ del corpus para un cliente primerizo (tarea de LLM).",
+    )
+    faq_parser.add_argument(
+        "--output",
+        type=Path,
+        default=Path("docs") / "faq.md",
+        help="Archivo Markdown donde se escribe la FAQ.",
+    )
+
     subparsers.add_parser(
         "status",
         help="Muestra el estado del corpus (semillas y entregables Gold).",
@@ -156,6 +186,22 @@ def main(argv: list[str] | None = None) -> int:
         print(f"Evaluación completada: {len(results)} preguntas -> {args.output}")
         return 0
 
+    if args.command == "summarize":
+        documents = load_gold_documents()
+        content = summarize(documents, focus=args.focus)
+        args.output.parent.mkdir(parents=True, exist_ok=True)
+        args.output.write_text(_task_document("Resumen ejecutivo del corpus", content), "utf-8")
+        print(f"Resumen generado: {args.output}")
+        return 0
+
+    if args.command == "faq":
+        documents = load_gold_documents()
+        content = generate_faq(documents)
+        args.output.parent.mkdir(parents=True, exist_ok=True)
+        args.output.write_text(_task_document("FAQ del corpus", content), "utf-8")
+        print(f"FAQ generada: {args.output}")
+        return 0
+
     if args.command == "list":
         for seed in (*SEEDS, *EXTERNAL_SEEDS):
             print(seed)
@@ -176,6 +222,13 @@ def _build_client(args: argparse.Namespace) -> WebClient:
 
     delay = REQUEST_DELAY_SECONDS if args.delay is None else args.delay
     return WebClient(delay=delay, respect_robots=not args.ignore_robots)
+
+
+def _task_document(title: str, content: str) -> str:
+    """Envuelve la salida de una tarea de LLM con un encabezado y la fecha."""
+
+    generated = datetime.now(UTC).strftime("%Y-%m-%d %H:%M UTC")
+    return f"# {title}\n\n> Generado con LLM sobre el corpus Gold · {generated}\n\n{content}\n"
 
 
 def print_report(report: CaptureReport) -> None:

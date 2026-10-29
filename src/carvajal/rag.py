@@ -43,6 +43,28 @@ DEFAULT_SYSTEM_PROMPT = (
     "proviene de un tercero, dilo y menciona el medio y la fecha."
 )
 
+SUMMARY_INSTRUCTIONS = (
+    "Eres el asistente del corpus Carvajal. Redacta un RESUMEN EJECUTIVO del corpus usando "
+    "solo la información disponible en él. Estructura obligatoria, en este orden: "
+    "(1) Qué es la empresa; (2) Sectores y empresas del grupo; (3) Cifras clave (ingresos, "
+    "EBITDA, utilidad y empleo) indicando año y fuente; (4) Tres hitos de la historia; "
+    "(5) Presencia geográfica. Reglas: no inventes cifras; si un dato no consta, escribe "
+    "«no consta en el corpus»; cita el slug de la fuente entre paréntesis tras cada cifra; "
+    "máximo 400 palabras; español de Colombia."
+)
+
+FAQ_INSTRUCTIONS = (
+    "Eres el asistente del corpus Carvajal. Genera una FAQ para un cliente que contacta a "
+    "la empresa por primera vez. Incluye entre 10 y 12 preguntas agrupadas en: Empresa, "
+    "Productos y sectores, Historia, Inversión y Contacto. Formato de cada entrada:\n"
+    "**P:** pregunta\n**R:** respuesta breve (máximo 3 líneas)\n_Fuente:_ slug\n"
+    "Cada entrada lleva exactamente una línea **P:** y una **R:**; no agregues notas, "
+    "aclaraciones sueltas ni líneas R vacías. Reglas: responde solo con el corpus y cita el "
+    "slug; si un tema esperable no está (por ejemplo horarios, sedes o línea de atención), "
+    "agrégalo al final en la sección 'Temas sin información en el corpus' explicando qué "
+    "falta; no inventes datos."
+)
+
 
 def build_retriever(documents: list[Document], index_dir: Path = INDEX_DIR) -> BaseRetriever:
     """Construye o reutiliza un retriever FAISS sobre los documentos del corpus.
@@ -144,6 +166,26 @@ def build_system_prompt(documents: list[Document]) -> str:
         Instrucciones de sistema con el corpus consolidado como contexto permanente.
     """
 
+    return f"{DEFAULT_SYSTEM_PROMPT}\n\n=== CORPUS CARVAJAL ===\n\n{_corpus_block(documents)}"
+
+
+def build_task_prompt(documents: list[Document], instructions: str) -> str:
+    """Compone el prompt de una tarea (resumen, FAQ) con el corpus consolidado.
+
+    Args:
+        documents: Documentos cargados desde ``data/gold/``.
+        instructions: Instrucciones específicas de la tarea.
+
+    Returns:
+        Prompt de sistema con las instrucciones de la tarea y el corpus completo.
+    """
+
+    return f"{instructions}\n\n=== CORPUS CARVAJAL ===\n\n{_corpus_block(documents)}"
+
+
+def _corpus_block(documents: list[Document]) -> str:
+    """Serializa el corpus con su procedencia para incluirlo en un prompt."""
+
     sections: list[str] = []
     for document in documents:
         slug = str(document.metadata.get("slug", "documento"))
@@ -155,8 +197,7 @@ def build_system_prompt(documents: list[Document]) -> str:
     corpus = "\n\n".join(sections)
     if len(corpus) > MAX_SYSTEM_PROMPT_CHARS:
         corpus = f"{corpus[:MAX_SYSTEM_PROMPT_CHARS]}\n\n[corpus truncado por longitud]"
-
-    return f"{DEFAULT_SYSTEM_PROMPT}\n\n=== CORPUS CARVAJAL ===\n\n{corpus}"
+    return corpus
 
 
 def _strip_front_matter(content: str) -> str:
@@ -241,6 +282,55 @@ def ask_with_sources(
     messages = prompt.format_messages(context=context, question=question)
     response = (llm if llm is not None else build_llm()).invoke(messages)
     return str(response.content), list(retrieved_documents)
+
+
+def summarize(
+    documents: list[Document],
+    llm: Runnable | None = None,
+    focus: str | None = None,
+) -> str:
+    """Genera un resumen ejecutivo del corpus (tarea «Resumen»).
+
+    Args:
+        documents: Documentos cargados desde ``data/gold/``.
+        llm: LLM invocable (por defecto: el configurado por ``LLM_PROVIDER``).
+        focus: Tema opcional sobre el que centrar el resumen.
+
+    Returns:
+        Resumen en Markdown, con la fuente citada después de cada cifra.
+    """
+
+    request = "Redacta el resumen ejecutivo del corpus."
+    if focus:
+        request = f"Redacta el resumen ejecutivo centrado en: {focus}."
+    return _run_task(build_task_prompt(documents, SUMMARY_INSTRUCTIONS), request, llm)
+
+
+def generate_faq(documents: list[Document], llm: Runnable | None = None) -> str:
+    """Genera una FAQ del corpus para un cliente primerizo (tarea «FAQ»).
+
+    Args:
+        documents: Documentos cargados desde ``data/gold/``.
+        llm: LLM invocable (por defecto: el configurado por ``LLM_PROVIDER``).
+
+    Returns:
+        FAQ en Markdown con preguntas, respuestas y fuente por entrada.
+    """
+
+    return _run_task(
+        build_task_prompt(documents, FAQ_INSTRUCTIONS),
+        "Genera la FAQ siguiendo el formato indicado.",
+        llm,
+    )
+
+
+def _run_task(system_prompt: str, request: str, llm: Runnable | None) -> str:
+    """Ejecuta una tarea de una sola llamada con el corpus como contexto."""
+
+    prompt = ChatPromptTemplate.from_messages([("system", system_prompt), ("human", "{request}")])
+    messages = prompt.format_messages(request=request)
+    response = (llm if llm is not None else build_llm()).invoke(messages)
+    return str(response.content)
 
 
 def load_questions(path: Path = QUESTIONS_FILE) -> list[str]:

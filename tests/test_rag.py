@@ -13,13 +13,18 @@ from langchain_openai import ChatOpenAI
 from carvajal.corpus import load_gold_documents
 from carvajal.rag import (
     DEFAULT_SYSTEM_PROMPT,
+    FAQ_INSTRUCTIONS,
+    SUMMARY_INSTRUCTIONS,
     ask,
     build_llm,
     build_retriever,
     build_system_prompt,
+    build_task_prompt,
     evaluate,
+    generate_faq,
     load_questions,
     render_results_markdown,
+    summarize,
 )
 
 
@@ -213,3 +218,51 @@ def test_build_retriever_reconstruye_cuando_cambia_el_corpus(
     build_retriever([Document(page_content="Versión dos.", metadata={"source": "x.md"})], index_dir)
 
     assert calls == ["from_texts", "from_texts"]
+
+
+def test_build_task_prompt_incluye_corpus_y_procedencia() -> None:
+    """El prompt de tarea lleva el corpus completo con la fuente de cada documento."""
+
+    documents = load_gold_documents()
+
+    prompt = build_task_prompt(documents, SUMMARY_INSTRUCTIONS)
+
+    assert SUMMARY_INSTRUCTIONS in prompt
+    assert "=== CORPUS CARVAJAL ===" in prompt
+    assert "### Fuente:" in prompt
+    assert "(oficial)" in prompt or "(tercero)" in prompt
+
+
+def test_summarize_usa_su_propio_prompt() -> None:
+    """La tarea Resumen envía las instrucciones de resumen, no las del Q&A."""
+
+    capturado: list = []
+
+    def fake_llm(messages: list) -> AIMessage:
+        capturado.append(messages)
+        return AIMessage(content="Resumen de prueba")
+
+    resultado = summarize(load_gold_documents(), llm=RunnableLambda(fake_llm), focus="empaques")
+
+    assert resultado == "Resumen de prueba"
+    system = capturado[0][0].content
+    assert SUMMARY_INSTRUCTIONS in system
+    assert DEFAULT_SYSTEM_PROMPT not in system
+    assert "empaques" in capturado[0][1].content
+
+
+def test_generate_faq_usa_su_propio_prompt() -> None:
+    """La tarea FAQ envía las instrucciones de FAQ y pide declarar temas ausentes."""
+
+    capturado: list = []
+
+    def fake_llm(messages: list) -> AIMessage:
+        capturado.append(messages)
+        return AIMessage(content="**P:** ¿Qué es Carvajal?")
+
+    resultado = generate_faq(load_gold_documents(), llm=RunnableLambda(fake_llm))
+
+    assert "¿Qué es Carvajal?" in resultado
+    system = capturado[0][0].content
+    assert FAQ_INSTRUCTIONS in system
+    assert "Temas sin información en el corpus" in system

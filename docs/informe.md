@@ -146,13 +146,20 @@ temperatura 0.
 
 ### 4.5 Interfaz de prueba
 
-`uv run streamlit run app.py` levanta una aplicación de dos pestañas:
+`uv run streamlit run app.py` levanta una aplicación de cuatro pestañas: **Pipeline**
+(captura visible por etapas), **Resumen**, **FAQ** y **Asistente** (Q&A).
 
 - **Pipeline de scraping**: ejecuta la captura y muestra en pantalla las siete etapas
   (descubrir, `robots.txt`, descargar, extraer, deduplicar, enriquecer, indexar), el log
   por URL y las métricas de la corrida: descubiertas, descargadas, escritas, descartadas
   con su motivo, caracteres, tokens estimados y duración. Un **diagrama de bloques**
   ilumina cada etapa al avanzar el proceso (gris = pendiente, color = activa, ✓ = hecha).
+- **Resumen**: tarea de LLM que sintetiza el corpus completo en cinco bloques (empresa,
+  sectores, cifras con año y fuente, hitos y presencia) y escribe «no consta en el corpus»
+  cuando falta un dato. Salida versionada en `docs/resumen.md`.
+- **FAQ**: tarea de LLM que genera 10-12 preguntas de un cliente primerizo con respuesta y
+  fuente, agrupadas por tema, más una sección de **temas sin información en el corpus**
+  (horarios, sedes, línea de atención). Salida en `docs/faq.md`.
 - **Asistente**: pregunta → respuesta con **fuentes citadas** (dominio, tipo de fuente y
   fragmento recuperado). Advierte si el índice vectorial está desactualizado.
 

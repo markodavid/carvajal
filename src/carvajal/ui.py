@@ -361,6 +361,60 @@ def _client(respect_robots: bool) -> WebClient:
     return WebClient(respect_robots=respect_robots)
 
 
+def render_summary_tab(documents: list[Document]) -> None:
+    """Dibuja la tarea «Resumen»: síntesis del corpus con cifras y fuentes."""
+
+    st.subheader("Resumen ejecutivo del corpus")
+    st.caption(
+        "Tarea de LLM: sintetiza el corpus completo (empresa, sectores, cifras clave, "
+        "historia y presencia geográfica) citando la fuente de cada dato."
+    )
+    focus = st.text_input(
+        "Enfocar en (opcional)",
+        placeholder="por ejemplo: sector de empaques",
+    )
+    if st.button("Generar resumen"):
+        with st.spinner("Redactando el resumen con el corpus completo…"):
+            st.session_state["resumen"] = _rag().summarize(documents, focus=focus or None)
+
+    content = st.session_state.get("resumen")
+    if content:
+        st.markdown(content)
+        st.download_button(
+            "Descargar resumen.md",
+            data=content,
+            file_name="resumen.md",
+            mime="text/markdown",
+        )
+    else:
+        st.info("Genera el resumen para verlo aquí.")
+
+
+def render_faq_tab(documents: list[Document]) -> None:
+    """Dibuja la tarea «FAQ»: preguntas frecuentes de un cliente primerizo."""
+
+    st.subheader("FAQ para un cliente que contacta por primera vez")
+    st.caption(
+        "Tarea de LLM: genera entre 10 y 12 preguntas con respuesta y fuente, agrupadas "
+        "por tema, y declara los temas que el corpus no cubre."
+    )
+    if st.button("Generar FAQ"):
+        with st.spinner("Redactando la FAQ con el corpus completo…"):
+            st.session_state["faq"] = _rag().generate_faq(documents)
+
+    content = st.session_state.get("faq")
+    if content:
+        st.markdown(content)
+        st.download_button(
+            "Descargar faq.md",
+            data=content,
+            file_name="faq.md",
+            mime="text/markdown",
+        )
+    else:
+        st.info("Genera la FAQ para verla aquí.")
+
+
 def render_assistant_tab(documents: list[Document]) -> None:
     """Dibuja la pestaña del asistente (Q&A con fuentes citadas)."""
 
@@ -381,13 +435,22 @@ def render_assistant_tab(documents: list[Document]) -> None:
             return
         with st.spinner("Buscando en el corpus y consultando el modelo…"):
             answer, sources = _answer(question.strip(), documents)
-        st.markdown(answer)
-        with st.expander(f"Fuentes citadas ({len(sources)})"):
-            for document in sources:
-                domain = document.metadata.get("domain", "carvajal.com")
-                kind = document.metadata.get("source_type", "oficial")
-                st.markdown(f"**{domain}** · {kind}")
-                st.caption(document.page_content[:400].replace("\n", " ") + "…")
+        st.session_state["qa"] = {
+            "question": question.strip(),
+            "answer": answer,
+            "sources": sources,
+        }
+
+    saved = st.session_state.get("qa")
+    if not saved:
+        return
+    st.markdown(saved["answer"])
+    with st.expander(f"Fuentes citadas ({len(saved['sources'])})"):
+        for document in saved["sources"]:
+            domain = document.metadata.get("domain", "carvajal.com")
+            kind = document.metadata.get("source_type", "oficial")
+            st.markdown(f"**{domain}** · {kind}")
+            st.caption(document.page_content[:400].replace("\n", " ") + "…")
 
 
 def _rag() -> ModuleType:
@@ -433,9 +496,15 @@ def main() -> None:
     brand_header()
 
     documents = load_gold_documents()
-    pipeline_tab, assistant_tab = st.tabs(["Pipeline de scraping", "Asistente"])
+    pipeline_tab, summary_tab, faq_tab, assistant_tab = st.tabs(
+        ["Pipeline de scraping", "Resumen", "FAQ", "Asistente"]
+    )
     with pipeline_tab:
         render_pipeline_tab(documents)
+    with summary_tab:
+        render_summary_tab(documents)
+    with faq_tab:
+        render_faq_tab(documents)
     with assistant_tab:
         render_assistant_tab(documents)
 
