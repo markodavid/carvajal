@@ -55,12 +55,14 @@ terceros. Todo se demuestra en una interfaz con el scraping visible etapa por et
 ## Fuentes del corpus
 
 | Origen | Dominio | Aporte |
-|---|---|---|
+|---|---|---|---|
 | Sitio oficial | `carvajal.com` | Misión, historia, sectores, gobierno corporativo, sostenibilidad |
 | Prensa económica | `larepublica.co`, `elpais.com.co`, `caliescribe.com` | Ingresos, EBITDA, márgenes, utilidad neta, activos, pasivos, patrimonio, empleo |
+| Corpus extendido (colaborativo) | `carvajalempaques.com`, `carvajaleducacion.com`, `mepal.com.co`, `cencarvajal.co`, fundaciones… | Productos, políticas, sedes y páginas de las filiales que el sitio matriz no cubre |
 
-Los documentos de terceros se marcan en el *front matter* con `source_type: tercero`, y
-el asistente está instruido para atribuir cada cifra a su medio y fecha.
+Los documentos de terceros se marcan en el *front matter* con `source_type: tercero`, los
+del corpus extendido con `source_type: colaborador`, y el asistente está instruido para
+atribuir cada cifra a su medio y fecha.
 
 ## Pipeline de captura
 
@@ -86,6 +88,42 @@ Gold    data/gold/*.md           Markdown + front matter (url, title, section,
 - **Métricas**: al terminar, `carvajal capture` reporta descubiertas, descargadas,
   escritas, descartadas (robots, duplicadas, errores), caracteres, tokens estimados y
   duración.
+
+## Corpus extendido (capa de recuperación)
+
+El núcleo (`data/gold/`) es el corpus curado que se consolida en el prompt. Encima se
+puede importar un **corpus externo** que solo participa en la recuperación: no se copia
+al prompt, se cita por fragmento con su URL y su categoría.
+
+```bash
+# Importar el corpus de un compañero (solo lectura) a data/external/<fuente>/
+uv run carvajal import --from ../proyecto-carvajal --source alejandro \
+  --release corpus-2026-10-23
+
+# Solo algunas categorías, con presupuesto acotado
+uv run carvajal import --from ../proyecto-carvajal --source alejandro \
+  --categories identity,governance --max-chars 500000
+
+# Incluir PDF de hasta 60 páginas (por defecto se excluyen)
+uv run carvajal import --from ../proyecto-carvajal --source alejandro \
+  --categories financials --max-pages 60
+```
+
+| Aspecto | Núcleo | Capa extendida |
+|---|---|---|
+| Ruta | `data/gold/*.md` | `data/external/<fuente>/gold/*.md` |
+| Prompt | Sí, completo | No, solo fragmentos recuperados |
+| Procedencia | `source_type: oficial\|tercero` | `source_type: colaborador`, `origin`, `category`, `page` |
+| Versionado en Git | Sí | No: se regenera con `carvajal import` (solo se versiona el manifiesto) |
+| Selección | Semillas de `config.py` | Categorías, presupuesto de caracteres y límite de páginas |
+
+La importación es idempotente: reconstruye la salida desde cero, deduplica por hash del
+texto y URL normalizada, y escribe `manifest.json` con la fuente, la captura donante y los
+conteos por categoría y dominio. El texto HTML se vuelve a extraer del Bronze donante con
+el extractor propio; los PDF se toman página por página de su texto Silver.
+
+> La capa extendida es material de terceros: conserva la atribución y no se presenta como
+> comunicación oficial de Carvajal.
 
 ## 🗺️ Arquitectura
 
@@ -146,7 +184,7 @@ make eval
 | Pestaña | Qué muestra |
 |---|---|
 | **Pipeline de scraping** | Ejecuta la captura en vivo con las 7 etapas (descubrir → `robots.txt` → descargar → extraer → deduplicar → enriquecer → indexar), el log por etapa y las métricas: descubiertas, descargadas, escritas, descartadas (con motivo), caracteres, tokens y duración. Arriba, el estado del corpus Gold. |
-| **Asistente** | Pregunta y respuesta RAG con **fuentes citadas**: dominio, tipo de fuente (oficial/tercero) y fragmento recuperado. Avisa si el índice vectorial está desactualizado. |
+| **Asistente** | Pregunta y respuesta RAG con **fuentes citadas**: dominio, tipo de fuente (oficial/tercero/colaborador), capa (núcleo/extendido), categoría y fragmento recuperado. Avisa si el índice vectorial está desactualizado. |
 
 La captura es idempotente: si el contenido de una página no cambia, su `hash` se repite y el
 índice FAISS **no se invalida**, así que se puede ejecutar la demo sin esperar la reconstrucción.
@@ -235,6 +273,7 @@ carvajal/
 ├── tests/
 ├── data/
 │   └── gold/       # entregable versionado (capa gold)
+│                   # data/external/ se genera con `carvajal import` (ignorado)
 │                   # data/index/ se genera en local (caché FAISS, ignorada)
 ├── docs/
 ├── .github/

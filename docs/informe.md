@@ -104,6 +104,22 @@ tokens)**, todavía por debajo del límite de 100 000 caracteres del prompt de s
 - Recuperación de los **5 fragmentos** más similares por pregunta (`k=5`).
 - Los metadatos de cada fragmento conservan la fuente (`slug` del documento).
 
+### 3.4 Corpus extendido (capa de recuperación)
+
+El núcleo de 21 documentos cubre el sitio matriz, pero deja fuera productos, filiales y
+fundaciones. Para cerrar esa brecha se importó el corpus de un compañero (rama
+`modulo_1`, captura `corpus-2026-10-23`) como **capa extendida**:
+
+- `carvajal import` lee su catálogo (`scraping_todos.jsonl`), filtra por categoría,
+  presupuesto de caracteres y páginas, y **vuelve a extraer el HTML con el extractor
+  propio**; los PDF se toman página por página de su texto Silver.
+- Deduplica por URL normalizada y hash del texto, y escribe
+  `data/external/<fuente>/{silver,gold,manifest.json}`.
+- La importación por defecto trae 485 documentos (≈1,45 M caracteres) de
+  identidad, gobierno, negocio, sostenibilidad, tecnología y noticias.
+- La capa extendida **no entra al prompt**: se recupera con FAISS y se cita con URL,
+  categoría y página. Así el prompt conserva su límite de 100 000 caracteres.
+
 ## 4. Modelado
 
 ### 4.1 Embeddings
@@ -153,8 +169,9 @@ temperatura 0.
   por URL y las métricas de la corrida: descubiertas, descargadas, escritas, descartadas
   con su motivo, caracteres, tokens estimados y duración. Un **diagrama de bloques**
   ilumina cada etapa al avanzar el proceso (gris = pendiente, color = activa, ✓ = hecha).
-- **Asistente**: pregunta → respuesta con **fuentes citadas** (dominio, tipo de fuente y
-  fragmento recuperado). Advierte si el índice vectorial está desactualizado.
+- **Asistente**: pregunta → respuesta con **fuentes citadas** (dominio, tipo de fuente,
+  capa núcleo/extendida, categoría y fragmento recuperado). Advierte si el índice
+  vectorial está desactualizado.
 
 La captura es idempotente: si el contenido no cambia, el `hash` se repite y el índice
 FAISS no se invalida, de modo que la demostración puede ejecutarse sin esperar la
@@ -213,6 +230,9 @@ reconstrucción de embeddings.
   `data/index/` y solo se reconstruye si cambia el corpus.
 - **Sin memoria conversacional:** una pregunta por turno.
 - **Evaluación cualitativa y manual:** no se implementó un *benchmark* automático.
+- **Capa extendida:** sus fechas son heterogéneas (`date_status`) y muchas fuentes no
+  tienen fecha de publicación; las respuestas deben atribuir la captura y no tratarla
+  como histórico. Los PDF quedan fuera por defecto para no desbordar el presupuesto.
 
 ## 6. Presentación
 

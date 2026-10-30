@@ -51,6 +51,7 @@ make check     # lint + formato + pruebas
 make lint      # Ruff (lint)
 make format    # Ruff (formato)
 make test      # pytest
+make import    # importa el corpus externo a la capa extendida
 ```
 
 > ⚠️ **Regla dura:** toda gestión de dependencias y entornos pasa por `uv`. Está
