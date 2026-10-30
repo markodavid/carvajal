@@ -107,6 +107,60 @@ def test_build_system_prompt_consolida_corpus() -> None:
     assert "captured_at:" not in prompt
 
 
+def test_build_system_prompt_omite_la_capa_extendida() -> None:
+    """El prompt consolida el núcleo, no la capa extendida."""
+
+    documents = [
+        Document(
+            page_content="---\ntitle: Núcleo\n---\n\nTexto del núcleo.",
+            metadata={"slug": "nucleo", "layer": "core"},
+        ),
+        Document(
+            page_content="---\ntitle: Externo\n---\n\nTexto extendido.",
+            metadata={"slug": "externo", "layer": "extended"},
+        ),
+    ]
+
+    prompt = build_system_prompt(documents)
+
+    assert "Texto del núcleo." in prompt
+    assert "Texto extendido." not in prompt
+
+
+def test_ask_etiqueta_los_fragmentos_con_su_fuente() -> None:
+    """El contexto entregado al LLM identifica la fuente y la capa del fragmento."""
+
+    captured_messages: list = []
+
+    def fake_retriever(query: str) -> list[Document]:
+        return [
+            Document(
+                page_content="Contenido externo.",
+                metadata={
+                    "slug": "ext_abc",
+                    "domain": "carvajalempaques.com",
+                    "source_type": "colaborador",
+                    "page": "4",
+                },
+            )
+        ]
+
+    def fake_llm(messages: list) -> AIMessage:
+        captured_messages.append(messages)
+        return AIMessage(content="Respuesta")
+
+    ask(
+        "pregunta",
+        RunnableLambda(fake_retriever),
+        system_prompt="Sistema.",
+        llm=RunnableLambda(fake_llm),
+    )
+
+    human = captured_messages[0][1].content
+    assert "[Fuente: ext_abc · carvajalempaques.com · colaborador · página 4]" in human
+    assert "Contenido externo." in human
+
+
 def test_load_questions_carga_preguntas(tmp_path: Path) -> None:
     """Carga las preguntas de prueba desde un archivo JSON."""
 

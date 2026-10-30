@@ -21,6 +21,7 @@ from carvajal.config import (
     DEEPSEEK_BASE_URL,
     DEEPSEEK_MODEL,
     INDEX_DIR,
+    LAYER_CORE,
     LLM_PROVIDER,
     QUESTIONS_FILE,
 )
@@ -40,7 +41,9 @@ DEFAULT_SYSTEM_PROMPT = (
     "hay información parcial, responde con lo disponible e indica qué falta. No inventes "
     "datos ni uses conocimiento externo. Cita las fuentes consultadas. Distingue siempre "
     "entre fuentes oficiales (carvajal.com) y de terceros (prensa, analistas): si una cifra "
-    "proviene de un tercero, dilo y menciona el medio y la fecha."
+    "proviene de un tercero, dilo y menciona el medio y la fecha. Algunos fragmentos "
+    "provienen de una capa ampliada marcada como colaborador: cítalos con su URL y no los "
+    "presentes como comunicación oficial de la empresa."
 )
 
 
@@ -135,17 +138,22 @@ def index_is_fresh(documents: list[Document], index_dir: Path = INDEX_DIR) -> bo
 
 
 def build_system_prompt(documents: list[Document]) -> str:
-    """Consolida el corpus limpio en el prompt de sistema (la 'memoria' del asistente).
+    """Consolida el núcleo limpio en el prompt de sistema (la 'memoria' del asistente).
+
+    La capa extendida no se consolida aquí: se recupera por similitud y se cita en
+    cada respuesta. Incluirla completa desbordaría el límite del prompt.
 
     Args:
-        documents: Documentos cargados desde ``data/gold/``.
+        documents: Documentos cargados desde ``data/gold/`` y la capa extendida.
 
     Returns:
-        Instrucciones de sistema con el corpus consolidado como contexto permanente.
+        Instrucciones de sistema con el corpus núcleo consolidado como contexto.
     """
 
     sections: list[str] = []
     for document in documents:
+        if document.metadata.get("layer", LAYER_CORE) != LAYER_CORE:
+            continue
         slug = str(document.metadata.get("slug", "documento"))
         domain = document.metadata.get("domain", "carvajal.com")
         kind = document.metadata.get("source_type", "oficial")
@@ -231,7 +239,7 @@ def ask_with_sources(
     """
 
     retrieved_documents = retriever.invoke(question)
-    context = "\n\n".join(document.page_content for document in retrieved_documents)
+    context = _format_context(retrieved_documents)
     prompt = ChatPromptTemplate.from_messages(
         [
             ("system", system_prompt or DEFAULT_SYSTEM_PROMPT),
@@ -241,6 +249,21 @@ def ask_with_sources(
     messages = prompt.format_messages(context=context, question=question)
     response = (llm if llm is not None else build_llm()).invoke(messages)
     return str(response.content), list(retrieved_documents)
+
+
+def _format_context(documents: list[Document]) -> str:
+    """Antepone a cada fragmento su fuente para que el LLM pueda citarla."""
+
+    blocks: list[str] = []
+    for document in documents:
+        metadata = document.metadata
+        source = str(metadata.get("slug", "documento"))
+        domain = str(metadata.get("domain", "carvajal.com"))
+        kind = str(metadata.get("source_type", "oficial"))
+        page = metadata.get("page")
+        suffix = f" · página {page}" if page else ""
+        blocks.append(f"[Fuente: {source} · {domain} · {kind}{suffix}]\n{document.page_content}")
+    return "\n\n".join(blocks)
 
 
 def load_questions(path: Path = QUESTIONS_FILE) -> list[str]:

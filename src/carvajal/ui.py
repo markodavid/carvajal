@@ -9,7 +9,7 @@ from types import ModuleType
 import streamlit as st
 from langchain_core.documents import Document
 
-from carvajal.config import EXTERNAL_SEEDS, LLM_PROVIDER, SEEDS
+from carvajal.config import EXTERNAL_SEEDS, LAYER_EXTENDED, LLM_PROVIDER, SEEDS
 from carvajal.corpus import load_gold_documents
 from carvajal.fetching import WebClient
 from carvajal.pipeline import CaptureEvent, CaptureReport, capture
@@ -237,14 +237,21 @@ def discarded_rows(report: CaptureReport) -> list[dict[str, str]]:
 
 
 def corpus_metrics(documents: list[Document]) -> list[tuple[str, str]]:
-    """Resume el corpus Gold cargado desde disco."""
+    """Resume el corpus cargado: núcleo, capa extendida y tamaño."""
 
-    official = sum(1 for document in documents if document.metadata.get("source_type") == "oficial")
+    core = [
+        document
+        for document in documents
+        if document.metadata.get("layer", "core") != LAYER_EXTENDED
+    ]
+    official = sum(1 for document in core if document.metadata.get("source_type") == "oficial")
     chars = sum(len(document.page_content) for document in documents)
     return [
         ("Documentos", f"{len(documents)}"),
+        ("Núcleo", f"{len(core)}"),
+        ("Extendidos", f"{len(documents) - len(core)}"),
         ("Oficiales", f"{official}"),
-        ("Terceros", f"{len(documents) - official}"),
+        ("Terceros", f"{len(core) - official}"),
         ("Caracteres", f"{chars:,}"),
         ("Tokens (est.)", f"{round(chars / 4):,}"),
     ]
@@ -254,8 +261,8 @@ def render_pipeline_tab(documents: list[Document]) -> None:
     """Dibuja la pestaña del pipeline con su ejecución y métricas."""
 
     st.subheader("Corpus actual")
-    columns = st.columns(5)
-    for column, (label, value) in zip(columns, corpus_metrics(documents), strict=True):
+    metrics = corpus_metrics(documents)
+    for column, (label, value) in zip(st.columns(len(metrics)), metrics, strict=True):
         column.metric(label, value)
 
     st.info(
@@ -361,6 +368,25 @@ def _client(respect_robots: bool) -> WebClient:
     return WebClient(respect_robots=respect_robots)
 
 
+def source_label(document: Document) -> str:
+    """Describe una fuente recuperada con su procedencia y capa."""
+
+    metadata = document.metadata
+    layer = "extendido" if metadata.get("layer") == LAYER_EXTENDED else "núcleo"
+    parts = [
+        str(metadata.get("domain", "carvajal.com")),
+        str(metadata.get("source_type", "oficial")),
+        layer,
+    ]
+    category = str(metadata.get("category", ""))
+    if category:
+        parts.append(category)
+    page = metadata.get("page")
+    if page:
+        parts.append(f"p. {page}")
+    return " · ".join(parts)
+
+
 def render_assistant_tab(documents: list[Document]) -> None:
     """Dibuja la pestaña del asistente (Q&A con fuentes citadas)."""
 
@@ -369,6 +395,11 @@ def render_assistant_tab(documents: list[Document]) -> None:
             "El índice vectorial no corresponde al corpus actual: la primera pregunta "
             "lo reconstruirá y puede tardar varios minutos."
         )
+
+    st.caption(
+        "El prompt consolida el núcleo y la recuperación consulta el núcleo y la capa "
+        "extendida; cada respuesta muestra de dónde viene cada fragmento."
+    )
 
     question = st.text_area(
         "Pregunta",
@@ -384,9 +415,10 @@ def render_assistant_tab(documents: list[Document]) -> None:
         st.markdown(answer)
         with st.expander(f"Fuentes citadas ({len(sources)})"):
             for document in sources:
-                domain = document.metadata.get("domain", "carvajal.com")
-                kind = document.metadata.get("source_type", "oficial")
-                st.markdown(f"**{domain}** · {kind}")
+                st.markdown(f"**{source_label(document)}**")
+                url = str(document.metadata.get("url", ""))
+                if url:
+                    st.caption(url)
                 st.caption(document.page_content[:400].replace("\n", " ") + "…")
 
 
