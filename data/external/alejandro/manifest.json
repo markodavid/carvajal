@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "source": "alejandro",
+  "release": "corpus-2026-10-23",
+  "corpus_root": "../proyecto-carvajal",
+  "generated_at": "2026-10-30T01:00:10.583468+00:00",
+  "filters": {
+    "categories": [
+      "business",
+      "governance",
+      "identity",
+      "news",
+      "sustainability",
+      "technology"
+    ],
+    "max_docs": 600,
+    "max_chars": 1500000,
+    "max_doc_chars": 120000,
+    "max_pages": 0,
+    "min_chars": 200
+  },
+  "documents": 485,
+  "chars": 1449338,
+  "tokens_estimate": 362334,
+  "by_category": {
+    "business": 279,
+    "governance": 14,
+    "identity": 11,
+    "news": 28,
+    "sustainability": 114,
+    "technology": 39
+  },
+  "by_domain": {
+    "carvajal.com": 73,
+    "carvajalcomunicacion.co": 5,
+    "carvajaleducacion.com": 25,
+    "carvajalempaques.com": 45,
+    "carvajalpulpaypapel.com": 1,
+    "cencarvajal.co": 46,
+    "colombia.carvajalempaques.com": 18,
+    "elsalvador.carvajalempaques.com": 18,
+    "fundacioncarvajal.org.co": 32,
+    "fundacionpropal.org": 43,
+    "mepal.com.co": 93,
+    "mexico.carvajalempaques.com": 75,
+    "propal.com.co": 11
+  }
+}

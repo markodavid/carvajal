@@ -4,8 +4,15 @@ import argparse
 from pathlib import Path
 
 from carvajal.config import (
+    EXTERNAL_CORPUS_DIR,
+    EXTERNAL_DIR,
     EXTERNAL_SEEDS,
     GOLD_DIR,
+    IMPORT_CATEGORIES,
+    IMPORT_MAX_CHARS,
+    IMPORT_MAX_DOC_CHARS,
+    IMPORT_MAX_DOCS,
+    IMPORT_MAX_PAGES,
     INDEX_FILE,
     QUESTIONS_FILE,
     REQUEST_DELAY_SECONDS,
@@ -14,6 +21,7 @@ from carvajal.config import (
 )
 from carvajal.corpus import load_gold_documents
 from carvajal.fetching import WebClient
+from carvajal.importer import ImportReport, import_external
 from carvajal.pipeline import CaptureReport
 from carvajal.pipeline import capture as run_capture
 from carvajal.rag import (
@@ -100,6 +108,69 @@ def build_parser() -> argparse.ArgumentParser:
         help="Archivo Markdown donde se escriben los resultados.",
     )
 
+    import_parser = subparsers.add_parser(
+        "import",
+        help="Importa un corpus externo a la capa extendida (solo recuperación).",
+    )
+    import_parser.add_argument(
+        "--from",
+        dest="corpus_root",
+        type=Path,
+        default=EXTERNAL_CORPUS_DIR,
+        help="Raíz del repositorio del corpus donante (solo lectura).",
+    )
+    import_parser.add_argument(
+        "--source",
+        default="alejandro",
+        help="Nombre corto de la fuente; se usa en el manifiesto y en ``origin``.",
+    )
+    import_parser.add_argument(
+        "--output",
+        type=Path,
+        default=None,
+        help="Destino de la capa extendida (por defecto data/external/<fuente>).",
+    )
+    import_parser.add_argument(
+        "--release",
+        default="",
+        help="Etiqueta de la captura donante (por ejemplo, corpus-2026-10-23).",
+    )
+    import_parser.add_argument(
+        "--categories",
+        default=",".join(IMPORT_CATEGORIES),
+        help="Categorías del catálogo donante, separadas por comas.",
+    )
+    import_parser.add_argument(
+        "--max-docs",
+        type=int,
+        default=IMPORT_MAX_DOCS,
+        help="Máximo de documentos a importar.",
+    )
+    import_parser.add_argument(
+        "--max-chars",
+        type=int,
+        default=IMPORT_MAX_CHARS,
+        help="Presupuesto de caracteres del cuerpo importado.",
+    )
+    import_parser.add_argument(
+        "--max-doc-chars",
+        type=int,
+        default=IMPORT_MAX_DOC_CHARS,
+        help="Tamaño máximo estimado por documento.",
+    )
+    import_parser.add_argument(
+        "--max-pages",
+        type=int,
+        default=IMPORT_MAX_PAGES,
+        help="Páginas máximas por PDF (0 desactiva los PDF).",
+    )
+    import_parser.add_argument(
+        "--min-chars",
+        type=int,
+        default=200,
+        help="Longitud mínima de un documento para conservarlo.",
+    )
+
     subparsers.add_parser(
         "status",
         help="Muestra el estado del corpus (semillas y entregables Gold).",
@@ -156,6 +227,27 @@ def main(argv: list[str] | None = None) -> int:
         print(f"Evaluación completada: {len(results)} preguntas -> {args.output}")
         return 0
 
+    if args.command == "import":
+        output_dir = args.output or EXTERNAL_DIR / args.source
+        try:
+            report = import_external(
+                corpus_root=args.corpus_root,
+                output_dir=output_dir,
+                source=args.source,
+                categories=_parse_categories(args.categories),
+                max_docs=args.max_docs,
+                max_chars=args.max_chars,
+                max_doc_chars=args.max_doc_chars,
+                max_pages=args.max_pages,
+                min_chars=args.min_chars,
+                release=args.release,
+            )
+        except FileNotFoundError as error:
+            print(error)
+            return 1
+        print_import_report(report, output_dir)
+        return 0
+
     if args.command == "list":
         for seed in (*SEEDS, *EXTERNAL_SEEDS):
             print(seed)
@@ -197,15 +289,47 @@ def print_report(report: CaptureReport) -> None:
         print(f"  ! {error}")
 
 
-def _print_corpus_status() -> None:
-    """Resume el corpus Gold: documentos, tamaño y composición por origen."""
+def print_import_report(report: ImportReport, output_dir: Path) -> None:
+    """Imprime las métricas de la importación del corpus externo."""
 
-    documents = sorted(GOLD_DIR.glob("*.md"))
-    chars = sum(path.stat().st_size for path in documents)
-    official = sum(1 for path in documents if _front_matter_value(path, "source_type") == "oficial")
-    print(f"Documentos en Gold: {len(documents)}")
+    print()
+    print("Resumen de la importación")
+    print(f"  Fuente:                    {report.source}")
+    print(f"  Registros en el catálogo:  {report.catalog_records}")
+    print(f"  Seleccionados:             {report.selected}")
+    print(f"  Importados:                {report.imported}")
+    print(f"  Duplicados:                {report.duplicates}")
+    print(f"  Sin texto suficiente:      {report.empty}")
+    print(f"  Fuera del presupuesto:     {report.over_budget}")
+    print(f"  Caracteres:                {report.chars:,}")
+    print(f"  Tokens (estimados):        {report.tokens_estimate:,}")
+    print(f"  Duración:                  {report.duration_seconds} s")
+    print(f"  Destino:                   {output_dir}")
+
+
+def _parse_categories(value: str) -> tuple[str, ...]:
+    """Convierte una lista separada por comas en categorías normalizadas."""
+
+    return tuple(category.strip().lower() for category in value.split(",") if category.strip())
+
+
+def _print_corpus_status() -> None:
+    """Resume el corpus: núcleo, capa extendida y tamaño total."""
+
+    core = sorted(GOLD_DIR.glob("*.md"))
+    external = sorted(EXTERNAL_DIR.glob("*/gold/*.md"))
+    official = sum(1 for path in core if _front_matter_value(path, "source_type") == "oficial")
+    chars = sum(path.stat().st_size for path in (*core, *external))
+
+    print(f"Documentos en Gold (núcleo): {len(core)}")
     print(f"  - oficiales: {official}")
-    print(f"  - terceros:  {len(documents) - official}")
+    print(f"  - terceros:  {len(core) - official}")
+    print(f"Capa extendida: {len(external)}")
+    for source_dir in sorted(
+        path for path in EXTERNAL_DIR.glob("*") if path.is_dir() and not path.name.endswith(".tmp")
+    ):
+        count = len(list((source_dir / "gold").glob("*.md")))
+        print(f"  - {source_dir.name}: {count}")
     print(f"Caracteres: {chars:,} (aprox. {round(chars / 4):,} tokens)")
     print(f"Índice JSONL: {'sí' if INDEX_FILE.exists() else 'no'}")
 

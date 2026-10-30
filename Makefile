@@ -5,7 +5,10 @@
 SHELL := /bin/bash
 
 .DEFAULT_GOAL := help
-.PHONY: help install dev pre-commit-install pre-commit lint format format-check typecheck test check build app eval clean
+.PHONY: help install dev pre-commit-install pre-commit lint format format-check typecheck test check build app eval import clean
+
+CORPUS_EXTERNO ?= ../proyecto-carvajal
+FUENTE_EXTERNA ?= alejandro
 
 help: ## Muestra esta ayuda
 	@echo Uso: make [objetivo]
@@ -24,6 +27,7 @@ help: ## Muestra esta ayuda
 	@echo   build              Construye el paquete (sdist + wheel)
 	@echo   app                Lanza la interfaz web de prueba (Streamlit)
 	@echo   eval               Ejecuta las preguntas de prueba (genera docs/resultados.md)
+	@echo   import             Importa el corpus externo a la capa extendida
 	@echo   clean              Limpia cachés y artefactos
 
 install: ## Sincroniza el entorno virtual e instala dependencias
@@ -62,6 +66,9 @@ app: ## Lanza la interfaz web de prueba (Streamlit)
 
 eval: ## Ejecuta las preguntas de prueba y genera docs/resultados.md
 	uv run carvajal eval
+
+import: ## Importa el corpus externo a la capa extendida
+	uv run carvajal import --from $(CORPUS_EXTERNO) --source $(FUENTE_EXTERNA)
 
 clean: ## Limpia cachés y artefactos
 	uv run python -c "import shutil; from pathlib import Path; [shutil.rmtree(p, ignore_errors=True) for p in ['.pytest_cache', '.ruff_cache', '.mypy_cache', 'dist', 'build', 'htmlcov']]; [shutil.rmtree(p, ignore_errors=True) for p in Path('.').rglob('__pycache__')]; Path('.coverage').unlink(missing_ok=True)"
