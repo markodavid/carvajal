@@ -1,40 +1,104 @@
-"""Carga del corpus Gold (módulo ligero, sin el stack de RAG)."""
+"""Carga del corpus Gold (núcleo + capa extendida) sin el stack de RAG."""
 
 from pathlib import Path
 
 from langchain_core.documents import Document
 
-from carvajal.config import GOLD_DIR
+from carvajal.config import (
+    ENABLE_EXTENDED_LAYER,
+    EXTERNAL_DIR,
+    GOLD_DIR,
+    LAYER_CORE,
+    LAYER_EXTENDED,
+)
 
 
-def load_gold_documents(gold_dir: Path = GOLD_DIR) -> list[Document]:
-    """Carga los entregables Gold (Markdown con *front matter*) como documentos.
+def load_gold_documents(
+    gold_dir: Path = GOLD_DIR,
+    external_dir: Path | None = None,
+    include_extended: bool | None = None,
+) -> list[Document]:
+    """Carga el núcleo y, si está activada, la capa extendida importada.
 
-    Se mantiene separado de :mod:`carvajal.rag` para que la interfaz pueda listar el
-    corpus sin pagar el coste de importar ``langchain``, ``faiss`` y los clientes de LLM.
+    El núcleo es el corpus curado que se consolida en el prompt. La capa extendida
+    solo participa en la recuperación y está **desactivada por defecto**: se activa con
+    ``include_extended=True`` o con la variable de entorno ``ENABLE_EXTENDED_LAYER``.
 
     Args:
-        gold_dir: Directorio con los Markdown del corpus.
+        gold_dir: Directorio del núcleo (Markdown con *front matter*).
+        external_dir: Raíz de la capa extendida (por defecto ``data/external``).
+        include_extended: Fuerza la carga o la omisión de la capa extendida.
 
     Returns:
         Lista de documentos listos para embeddear y recuperar.
     """
 
-    documents: list[Document] = []
-    if not gold_dir.exists():
+    documents = _load_markdown_dir(gold_dir, layer=LAYER_CORE)
+    enabled = ENABLE_EXTENDED_LAYER if include_extended is None else include_extended
+    if not enabled:
         return documents
-    for path in sorted(gold_dir.glob("*.md")):
+
+    root = external_dir or EXTERNAL_DIR
+    if not root.exists():
+        return documents
+
+    for source_dir in _external_sources(root):
+        documents.extend(
+            _load_markdown_dir(
+                source_dir / "gold",
+                layer=LAYER_EXTENDED,
+                origin=source_dir.name,
+            )
+        )
+    return documents
+
+
+def _external_sources(external_dir: Path) -> list[Path]:
+    """Lista las fuentes importadas, ignorando restos de una importación fallida."""
+
+    return sorted(
+        path
+        for path in external_dir.iterdir()
+        if path.is_dir() and not path.name.endswith(".tmp") and (path / "gold").exists()
+    )
+
+
+def _load_markdown_dir(directory: Path, layer: str, origin: str = "") -> list[Document]:
+    """Carga los Markdown de un directorio con sus metadatos de procedencia."""
+
+    documents: list[Document] = []
+    if not directory.exists():
+        return documents
+    for path in sorted(directory.glob("*.md")):
         content = path.read_text(encoding="utf-8")
         front_matter = parse_front_matter(content)
-        metadata = {
-            "source": str(path),
-            "slug": path.stem,
-            "title": front_matter.get("title", path.stem),
-            "domain": front_matter.get("domain", "carvajal.com"),
-            "source_type": front_matter.get("source_type", "oficial"),
-        }
-        documents.append(Document(page_content=content, metadata=metadata))
+        documents.append(
+            Document(
+                page_content=content,
+                metadata={
+                    "source": str(path),
+                    "slug": path.stem,
+                    "title": front_matter.get("title", path.stem),
+                    "url": front_matter.get("url", ""),
+                    "domain": front_matter.get("domain", "carvajal.com"),
+                    "source_type": front_matter.get("source_type", "oficial"),
+                    "category": front_matter.get("category", ""),
+                    "entity": front_matter.get("entity", ""),
+                    "origin": front_matter.get("origin", origin),
+                    "page": front_matter.get("page", ""),
+                    "published_at": front_matter.get("published_at", ""),
+                    "date_status": front_matter.get("date_status", ""),
+                    "layer": layer,
+                },
+            )
+        )
     return documents
+
+
+def load_core_documents(gold_dir: Path = GOLD_DIR) -> list[Document]:
+    """Devuelve solo el núcleo, que es lo que entra al prompt de sistema."""
+
+    return _load_markdown_dir(gold_dir, layer=LAYER_CORE)
 
 
 def parse_front_matter(content: str) -> dict[str, str]:

@@ -60,6 +60,10 @@ con asistente RAG.
 - Extraer el cuerpo editorial descartando menús, formularios, modales y pie de página.
 - Deduplicar por huella SHA-256 y enriquecer cada documento con sección, hash y tamaño.
 - Versionar `data/gold/` como entregable del corpus (bronze y silver se regeneran).
+- Importar corpus externos de terceros a una **capa extendida** (`data/external/`),
+  solo para recuperación y citación, con manifiesto, deduplicación por URL/hash y
+  procedencia explícita (`origin`, `category`, `entity`, `page`). Esa capa nunca se
+  consolida en el prompt de sistema.
 - Ofrecer una CLI y un Makefile como interfaz única del proyecto.
 
 ### Fuera del alcance (por ahora)
@@ -76,8 +80,9 @@ con asistente RAG.
 | 1. Captura inicial (landing + secciones) | ✅ Hecha | 15 documentos limpios en `data/gold/` (~64.5 KB) |
 | 2. Ampliación de semillas | ✅ Hecha | 6 fuentes de terceros con indicadores financieros |
 | 3. Enriquecimiento (PDFs, vídeo) | ⬜ Pendiente | Nuevas semillas y extractores |
-| 4. Chunking y embeddings | 🚧 En curso | Chunking + FAISS + embeddings Ollama/anthropic |
-| 5. Asistente RAG (LLM + prompt + UI) | 🚧 En curso | LangChain + FAISS + Ollama/Claude + Streamlit |
+| 4. Chunking y embeddings | ✅ Hecha | Chunking 1000/200 + FAISS con embeddings Ollama |
+| 5. Asistente RAG (LLM + prompt + UI) | 🚧 En curso | LangChain + FAISS + Ollama/DeepSeek/Claude + Streamlit |
+| 6. Corpus externo (capa extendida) | ✅ Hecha | `carvajal import` + manifiesto + recuperación citada |
 
 ## 3. Stack técnico
 
@@ -118,13 +123,15 @@ carvajal/
 │   ├── gold.py              # front matter + índice JSONL
 │   ├── pipeline.py          # orquestación de las tres capas
 │   ├── models.py            # modelos del dominio
+│   ├── importer.py          # importación del corpus externo (capa extendida)
 │   ├── rag.py               # recuperación, prompt y generación (RAG)
 │   ├── ui.py                # interfaz web de pruebas (Streamlit)
-│   └── cli.py               # capture / ask / status / list
+│   └── cli.py               # capture / import / ask / status / list
 ├── data/                    # capas Medallion (raw y processed ignoradas)
 │   ├── raw/                 # bronze — HTML crudo
 │   ├── processed/           # silver — Markdown limpio
-│   ├── gold/                # gold — entregable versionado
+│   ├── gold/                # gold — entregable versionado (núcleo)
+│   ├── external/            # capa extendida importada (solo manifiesto en Git)
 │   └── index/               # índice FAISS en caché (regenerable, ignorado por Git)
 ├── tests/                   # pruebas (pytest, patrón AAA)
 ├── app.py                   # entrada de la interfaz: streamlit run app.py
@@ -161,6 +168,9 @@ carvajal/
   - El *front matter* es la única fuente de metadatos; no se duplica en el cuerpo.
   - `data/gold/` es el contrato con el proyecto consumidor: cambiarlo es un cambio
     incompatible y se documenta en esta constitución.
+  - La capa extendida (`data/external/`) **solo** se recupera y se cita; nunca se
+    consolida completa en el prompt ni se presenta como fuente oficial.
+  - Toda importación deja `manifest.json` con su fuente, captura donante y conteos.
 
 ## 6. Calidad y automatización
 
@@ -233,6 +243,7 @@ git push
 | 2026-10-29 | Tres tareas de LLM sobre el mismo corpus: Resumen, FAQ y Q&A | La rúbrica del Módulo 1 exige las tres tareas; comparten el bloque de corpus consolidado y cada una tiene su propio prompt, con citas de fuente y reglas anti-alucinación |
 | 2026-10-30 | Alcance documentado en `docs/alcance.md`; el sitio no publica contacto ni sedes | Se verificaron 404 en `/contacto/`, `/sedes/`, `/oficinas/`, barrido de 26 sub-sitemaps y portada sin teléfonos ni direcciones. No se inventan datos: el asistente declara la ausencia y remite a los canales oficiales |
 | 2026-10-30 | Experimentación de prompts documentada en `docs/prompts.md` | Cada tarea se probó con 3-4 variantes sobre el corpus real; las métricas (fuentes citadas, cifras, declaración de ausencia) justifican las reglas actuales y quedan reproducibles con `scripts/experimentos_prompts.py` |
+| 2026-10-30 | Importar el corpus de un compañero como **capa extendida** (`data/external/`), desactivada por defecto | Su corpus aporta cientos de fuentes que el núcleo de 24 documentos no cubre. No se consolida en el prompt (1,4 M de caracteres) y solo participa en recuperación cuando se activa con `ENABLE_EXTENDED_LAYER`; así la demo sigue con el núcleo y el índice ya construido |
 
 ## 10. Notas y tareas pendientes
 
@@ -242,6 +253,8 @@ git push
 - [ ] Evaluar *deduplicación* de *boilerplate* entre documentos por hash de bloque.
 - [ ] Definir el contrato de *chunking* con el proyecto consumidor.
 - [x] Ejecutar `make eval` con credenciales y anexar los resultados al informe.
+- [x] Importar el corpus externo como capa extendida con manifiesto y deduplicación.
+- [ ] Incorporar PDF prioritarios del corpus externo (estados financieros, informes anuales).
 - [ ] Registrar decisiones de arquitectura (ADRs) en `docs/decisions/`.
 
 ## 11. Configuración local (no trackear)

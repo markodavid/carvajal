@@ -12,6 +12,7 @@ from carvajal.ui import (
     render_diagram,
     report_metrics,
     scope_seeds,
+    source_label,
 )
 
 
@@ -96,16 +97,48 @@ def test_corpus_metrics_cuenta_oficiales_y_terceros() -> None:
     metrics = dict(corpus_metrics(documents))
 
     assert metrics["Documentos"] == "2"
+    assert metrics["Núcleo"] == "2"
+    assert metrics["Extendidos"] == "0"
     assert metrics["Oficiales"] == "1"
     assert metrics["Terceros"] == "1"
 
 
-def _document(url: str, source_type: str):
+def test_corpus_metrics_separa_la_capa_extendida() -> None:
+    """Los documentos externos se cuentan aparte del núcleo."""
+
+    core = _document("https://www.carvajal.com/historia/", "oficial")
+    extended = _document("https://carvajalempaques.com/", "colaborador", layer="extended")
+
+    metrics = dict(corpus_metrics([core, extended]))
+
+    assert metrics["Documentos"] == "2"
+    assert metrics["Núcleo"] == "1"
+    assert metrics["Extendidos"] == "1"
+
+
+def test_source_label_describe_procedencia_y_capa() -> None:
+    """La fuente citada muestra dominio, tipo, capa y página."""
+
+    document = _document("https://carvajalempaques.com/", "colaborador", layer="extended")
+    document.metadata.update({"category": "business", "page": "7"})
+
+    label = source_label(document)
+
+    assert label == "carvajalempaques.com · colaborador · extendido · business · p. 7"
+
+
+def _document(url: str, source_type: str, layer: str = "core"):
     """Construye un documento LangChain con metadatos mínimos."""
+
+    from urllib.parse import urlparse
 
     from langchain_core.documents import Document
 
-    return Document(page_content="contenido", metadata={"url": url, "source_type": source_type})
+    domain = urlparse(url).netloc.removeprefix("www.")
+    return Document(
+        page_content="contenido",
+        metadata={"url": url, "domain": domain, "source_type": source_type, "layer": layer},
+    )
 
 
 def test_render_diagram_marca_las_siete_etapas() -> None:

@@ -28,6 +28,11 @@ data/processed/*
 !data/raw/.gitkeep
 !data/processed/.gitkeep
 
+# Corpus externo: derivados regenerables con `carvajal import`; solo se versiona
+# el manifiesto de cada fuente para dejar constancia de qué se importó.
+data/external/*/*
+!data/external/*/manifest.json
+
 # Índice vectorial FAISS (se regenera desde data/gold/ con `make app` o `carvajal ask`)
 data/index/
 
