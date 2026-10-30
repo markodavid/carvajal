@@ -146,6 +146,11 @@ para enfocar la respuesta. El enfoque es *zero-shot*: no se usan ejemplos few-sh
 la robustez se logra con instrucciones explícitas, delimitadores del corpus y
 temperatura 0.
 
+Los tres prompts (Resumen, FAQ y Q&A) y las variantes probadas sobre el corpus real están
+documentados en [`docs/prompts.md`](prompts.md), con las métricas que justifican cada regla
+(fuentes citadas, cifras, declaración de ausencia). Se reproducen con
+`uv run python scripts/experimentos_prompts.py`.
+
 ### 4.5 Interfaz de prueba
 
 `uv run streamlit run app.py` levanta una aplicación de cuatro pestañas: **Pipeline**
