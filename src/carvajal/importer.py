@@ -447,7 +447,8 @@ def _write_layer(
             ),
             ensure_ascii=False,
             indent=2,
-        ),
+        )
+        + "\n",
         encoding="utf-8",
     )
 
