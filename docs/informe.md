@@ -195,9 +195,9 @@ reconstrucción de embeddings.
 
 ### 5.1 Metodología
 
-- **25 preguntas** de prueba en `data/questions.json`, cubriendo los sectores,
-  historia, propósito, sostenibilidad, gobierno corporativo, inversionistas y
-  contacto, más preguntas fuera del alcance para verificar la abstención.
+- **30 preguntas** de prueba en `data/questions.json`, cubriendo los sectores,
+  historia, propósito, sostenibilidad, gobierno corporativo, inversionistas, cifras
+  financieras y contacto, más preguntas fuera del alcance para verificar la abstención.
 - Ejecución reproducible: `make eval` (o `uv run carvajal eval`), que genera
   [`docs/resultados.md`](resultados.md) con pregunta + respuesta.
 - Configuración de la corrida: `LLM_PROVIDER=deepseek` (`deepseek-chat`), embeddings
@@ -210,12 +210,19 @@ reconstrucción de embeddings.
 
 | Resultado | Preguntas |
 |---|---|
-| Respuestas completas y correctas | **21 / 25** |
-| Respuestas parciales (señalan información faltante) | **3 / 25** (Bioform, LiquidezYa, sostenibilidad) |
-| Abstención correcta | **1 / 25** (datos de contacto) |
+| Respuestas completas y correctas | **26 / 30** |
+| Respuestas parciales (señalan información faltante) | **3 / 30** (Bioform, LiquidezYa, activos/pasivos de 2024) |
+| Abstención correcta | **1 / 30** (datos de contacto) |
 
 > Evaluación cualitativa del equipo sobre las respuestas generadas con DeepSeek
-> (`deepseek-chat`) el 2026-10-28. El detalle completo está en `docs/resultados.md`.
+> (`deepseek-chat`) el 2026-10-30, con las 30 preguntas (se añadieron 5 financieras).
+> El detalle completo está en `docs/resultados.md`.
+
+**Tareas de Resumen y FAQ.** Además del Q&A se evaluaron las otras dos tareas con
+criterios propios: el resumen debe cubrir los cinco bloques y **declarar los datos que
+faltan** (lo hace con el EBITDA de 2024: «no consta en el corpus»), y la FAQ debe incluir
+10-12 preguntas con fuente y **una sección de temas no cubiertos**. Ambas se generan con
+`uv run carvajal summarize` y `uv run carvajal faq` (`docs/resumen.md`, `docs/faq.md`).
 
 ### 5.3 Ejemplos representativos
 
@@ -226,6 +233,19 @@ reconstrucción de embeddings.
 | 17 | ¿Qué noticias recientes publica? | Lista 12 titulares con sus fechas a partir de `noticias`. | Correcta |
 | 18 | ¿Cuál es la historia desde su fundación? | Cronología completa 1904–2024 organizada por etapas, citando `historia`. | Correcta |
 | 21 | ¿Cómo contactar a Carvajal? | "No dispongo de esa información": el corpus no incluye datos de contacto generales. | Abstención correcta |
+| 27 | ¿Cuál fue el EBITDA consolidado a septiembre de 2025? | `$351.631 millones`, margen EBITDA de 12% a 14%, atribuido a La República y marcado como fuente de terceros. | Correcta |
+| 29 | ¿Activos, pasivos y patrimonio al cierre de 2024? | Da las cifras de Cali Escribe ($1,95 / $1,02 / $0,94 billones) y advierte que **no coinciden** con otras fuentes y que no hay respaldo oficial. | Parcial (declara la inconsistencia) |
+
+**Ejemplo de la tarea Resumen** (`docs/resumen.md`):
+
+| Bloque | Resultado |
+|---|---|
+| Cifras clave | Ingresos 2024 `$3,9 billones` (dos fuentes de prensa); **EBITDA 2024: «no consta en el corpus»**; EBITDA sep-2025 `$351.631 millones` |
+| Presencia | 10 países en la fuente oficial, 17 según prensa: el resumen **declara la discrepancia** en vez de elegir una |
+
+**Ejemplo de la tarea FAQ** (`docs/faq.md`): 12 preguntas en 5 temas con `**P:**`, `**R:**` y
+`_Fuente:_`, más la sección **«Temas sin información en el corpus»** (horarios, sedes, línea
+de atención, canales de venta, vacantes y tratamiento de datos).
 
 ### 5.4 Análisis y limitaciones
 

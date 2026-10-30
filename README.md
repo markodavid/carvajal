@@ -211,6 +211,16 @@ captura (naranja = etapa activa, verde = completada, gris = pendiente):
 
 [![Pestaña Asistente](docs/ui-asistente.png)](docs/ui-asistente.png)
 
+**Resumen ejecutivo** (tarea de LLM) — cinco bloques, cada cifra con su fuente y «no consta
+en el corpus» cuando falta el dato:
+
+[![Pestaña Resumen](docs/ui-resumen.png)](docs/ui-resumen.png)
+
+**FAQ** (tarea de LLM) — 12 preguntas con respuesta y fuente, más los temas que el corpus no
+cubre:
+
+[![Pestaña FAQ](docs/ui-faq.png)](docs/ui-faq.png)
+
 La identidad visual usa el **logo oficial en SVG** (`assets/carvajal-logo.svg`) y la paleta
 de marca del sitio (`#00B5E5`, `#80A41B`, `#ED7004`, `#62358C`, `#003A5D`, `#015625`),
 configurada en `.streamlit/config.toml` e inyectada como CSS en la app.
