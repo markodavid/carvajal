@@ -4,9 +4,9 @@ title: Carvajal S.A.: Futuro consolidado ante desafíos globales | Noticias de C
 section: prensa
 domain: caliescribe.com
 source_type: tercero
-captured_at: 2026-10-30T00:34:27.640361+00:00
-hash: 9c7636d5b3c2539219654f9e0ffaffc34e9327bec0b721f3d42e4fe92489d496
-chars: 5618
+captured_at: 2026-10-31T13:43:40.358830+00:00
+hash: b444886ab5d2d5fa16912052c141dba6e422cf8f11c0febdb94a6e538651857b
+chars: 5540
 ---
 
 # Carvajal S.A.: Futuro consolidado ante desafíos globales
@@ -67,33 +67,33 @@ Compartir:
 
 ### Artículos Relacionados
 
-#### Fallo tribunal sobre POT, Cali busca modulación
+#### Colombia entra en la política 2026
 
-20 mayo 2024
+2 enero 2026
 
-#### La semana de pasión del alcalde I
+#### Renovación total de Av. Ciudad de Cali, más improvisación
 
-11 abril 2025
+31 enero 2025
 
-#### Pronóstico – Se cae re perfilamiento Cali I
+#### Grandes ganadores de la 1ª vuelta presidencial de 2026
 
-20 julio 2024
+31 mayo 2026
 
-#### Alcalde, equilibre lo conveniente, lo legal y real
+#### Abelardo de la Espriella y el tributo a los grandes referentes
 
-17 febrero 2024
+7 agosto 2026
 
 ## Recent Posts
 
-- Hugo Salazar: entender la crisis del agua y el alcantarillado de Cali
+- La primera Lupa Urbana Empresarial: Cali hacia la revolución tecnológica
 
-- Cali, en crisis: ¿por qué Emcali cambiaría su activo de $2 billones por Salvajina?
+- Salvajina: 41 años de regulación hídrica y generación eléctrica,
 
-- Atletismo colombiano: pistas destruidas, recorte presupuestal, la amenaza del ciclo olimpico
+- Intel cae un 29 % en Wall Street
 
-- La Lupa al agua de Cali con Hugo Salazar J
+- La lupa urbana a Mabel Lara
 
-- Gardeazábal dice la verdad a Eder ?. Poligrafo
+- Ahorrar agua y electricidad
 
 ## Recent Comments
 

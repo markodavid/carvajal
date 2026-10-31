@@ -4,7 +4,7 @@ title: Empaques
 section: empaques
 domain: carvajal.com
 source_type: oficial
-captured_at: 2026-10-30T00:33:40.988035+00:00
+captured_at: 2026-10-31T13:43:08.054262+00:00
 hash: 50ac6f49964920f4193d59bbd194b0e2346cada59808d7d052a5ab4e43e0bb12
 chars: 3052
 ---

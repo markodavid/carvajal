@@ -4,9 +4,9 @@ title: Carvajal reportó ingresos por $1,9 billones a junio, un decrecimiento de
 section: prensa
 domain: larepublica.co
 source_type: tercero
-captured_at: 2026-10-30T00:34:17.351565+00:00
-hash: 563ecd3f6f5f2f53e4af2495a7e951de8766369a5f8d2dc030745cb6095cbc5a
-chars: 3835
+captured_at: 2026-10-31T13:43:34.313644+00:00
+hash: 46d041951a00d2f3e24f9d65b96b439b3abb4e500c6990075b6d9bbeb4612eb2
+chars: 3881
 ---
 
 ## Carvajal reportó ingresos por $1,9 billones a junio, un decrecimiento de 14% anual
@@ -51,28 +51,28 @@ Al cierre de junio 2024, Carvajal S.A. y sus subordinadas no presentaron cambios
 
 ## MÁS DE EMPRESAS
 
-## Implementar software de gestión empresarial puede costarle a una Pyme desde US$1.000
+## Basf reportó ingresos por US$18.289 millones durante el tercer trimestre de 2026
 
-Estas herramientas integran y relacionan información administrativa y comercial. Una pyme debe evaluar su uso cuando su negocio crece y más margen de error
+Las ventas crecieron 14% anual debido a precios mal altos y volúmenes ligeramente superiores en el periodo
 
-## "Lo que debemos hacer es pasar de consumir tecnología para ser unos productores activos"
+## Aseocolba, 35 años de confianza y oportunidades desde la Costa Caribe al territorio nacional
 
-José Fernando Quintero, CEO de Indra Group Colombia, proyecta ingresos por US$223 millones y plantea una reflexión sobre la competitividad
+Fundada en Barranquilla, la compañía celebra una trayectoria de alcance nacional con más de 6.000 colaboradores y un legado que une servicio, liderazgo femenino e inclusión
 
-## La Andi comunicó que aún no hay humo blanco en búsqueda de su próximo presidente
+## Con Soho 26, Marval inicia un nuevo capítulo para Bogotá gracias a la megaobra
 
-La Asociación aseguró que hasta que se concrete la elección de un nuevo presidente, la Junta de Dirección General y su Mesa Directiva estarán al frente
+La constructora con 45 años de trayectoria propone una transformación urbana, al plantear un distrito de cuatro manzanas conectadas para recrear, en la Calle 26, el concepto de ciudad de 15 minutos
 
 ### MÁS DE LA REPÚBLICA
 
-## Apple lanza su primer MacBook táctil y deja atrás la visión de Steve Jobs
+## Paraguay envejecerá en la mitad de tiempo que Europa, pero el país no está preparado
 
-## Estas son todas las etapas del calvario que marcó el trámite de la reforma pensional
+## Gremios piden modernizar el transporte de carga para mejorar la competitividad
 
-## KOA entró a la Bolsa de Colombia como emisor de CDT con más de 18.000 clientes
+## Los clientes de Banco Contactar ya pueden realizar pagos y transacciones por PSE
 
 ## ¿Cuánto cuesta viajar a Barranquilla para presenciar la final de la Copa Sudamericana?
 
-## Denuncian a Petro ante la Comisión de Acusaciones por plan para afectar las elecciones
+## JEP imputó crímenes de guerra y de lesa humanidad a Pablo Catatumbo y otros exjefes de las Farc
 
-## Cómo distribuir la prima de fin de año para comenzar 2027 con mayor tranquilidad
+## No espere a tener embargos, lo que debe hacer cuando ya no puede pagar sus deudas

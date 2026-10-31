@@ -4,9 +4,9 @@ title: Carvajal y sus empresas reportan resultados - El País
 section: prensa
 domain: elpais.com.co
 source_type: tercero
-captured_at: 2026-10-30T00:34:21.761691+00:00
-hash: 2fa13f235f27e8d51e421218964395f0f8f1971b2f7caf93e040c066b19f4c99
-chars: 4559
+captured_at: 2026-10-31T13:43:36.326608+00:00
+hash: 12efaeb68051755573fe657c41858af456d5899fa8fb97d375de9fc2192248c9
+chars: 4606
 ---
 
 Economía
@@ -33,15 +33,15 @@ Sigue el canal de El País Cali en WhatsApp
 
 ## Noticias Destacadas
 
-Bruce Mac Master rechaza la propuesta de eliminar arancel a prendas de vestir
+Aportes a salud en Colombia subirían según el salario: así cambiarían los pagos
 
-Halloween 2026: dulces colombianos conquistan nuevos mercados pese a la caída de las exportaciones
+Temu, Shein, celulares y otros productos que pagarían más IVA con el ajuste fiscal
 
-Gobierno prepara plan de racionamiento energético ante el fenómeno de El Niño
+Plan Nacional de Desarrollo contempla millonaria inversión para el Valle, Cauca y Nariño
 
-Centro Democrático radica nueva reforma pensional que cambiaría la de Petro
+Federación de Cafeteros y Consejo Gremial, preocupados por impacto de la Ley de Rescate Fiscal
 
-Barreras para acceder a préstamos mantienen vigente el ‘gota a gota’; advierte el FGA
+Jóvenes aprenden a ahorrar creando y usando videojuegos; esta es la experiencia surgida desde Cali
 
 Carvajal S.A. informó sobre el reporte de los resultados financieros al cierre del 31 de diciembre de 2024 separado y consolidado, así como de las compañías garantes de la emisión de bonos.
 
@@ -67,20 +67,24 @@ Jefe de la Redacción Web de El País. Especialista en gerencia del talento huma
 
 ## AHORA EN Economía
 
-## Los cambios en impuestos de renta, IVA y patrimonio que trae la ley de rescate
+Economia
 
-## Gobierno radicó la ley de rescate: habrá devolución de IVA y reducción en impuesto de renta a las empresas
+## Así quedarán las tarifas de la gasolina y el ACPM en Cali y las principales ciudades durante noviembre
 
-Estudio
+## Jóvenes aprenden a ahorrar creando y usando videojuegos; esta es la experiencia surgida desde Cali
 
-## Robo en supermercados representó $173.000 millones en 2025; camuflar en la cartera, la modalidad más usada
+Cali
 
-## Fenalco estima que el incremento del salario mínimo para 2027 no debería superar el 9 %
+## Así concluyó el Encuentro Regional del Plan Nacional de Desarrollo 2026-2030 realizado en Cali
 
-## Un millón de colombianos salieron de la pobreza energética; estas son las cifras del Valle del Cauca
+## Cali tendrá una oficina bancaria móvil: dónde estará y qué trámites se podrán realizar
 
-## Adultos mayores pagan mejor sus créditos, pero enfrentan barreras para acceder a préstamos en Colombia
+## Banco de la República mantuvo estable la tasa de interés en 12,25 %
 
-## Bruce Mac Master rechaza la propuesta de eliminar arancel del 40 % a las prendas de vestir
+## Plan Nacional de Desarrollo proyecta 54 proyectos para el Valle, Cauca y Nariño; estas son las cifras de inversión
 
-## Confitería colombiana llega a Perú y Centroamérica; Valle del Cauca y Caldas lideran las exportaciones
+Colombia
+
+## Subirán los aportes a salud: así aumentarán los pagos para empleados e independientes con la Ley de Rescate Económico
+
+## Subir el IVA al café del 5% al 19% afectaría el consumo nacional y el empleo, asegura Fedecafé

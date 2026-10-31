@@ -4,7 +4,7 @@ title: Espacios
 section: espacios
 domain: carvajal.com
 source_type: oficial
-captured_at: 2026-10-30T00:33:52.666446+00:00
+captured_at: 2026-10-31T13:43:17.087342+00:00
 hash: 405f123d2026c49e951cd67c250b9b8ce39fa24a1b98b601a42d394e5d2a4ad0
 chars: 3213
 ---

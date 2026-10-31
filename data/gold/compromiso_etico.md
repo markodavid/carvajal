@@ -4,7 +4,7 @@ title: Compromiso Etico
 section: compromiso-etico
 domain: carvajal.com
 source_type: oficial
-captured_at: 2026-10-30T00:34:04.825169+00:00
+captured_at: 2026-10-31T13:43:26.471971+00:00
 hash: 9cecf1e8955dc7e11add6ca4fe0958165be4634291a4387c7b03fcee36c7df55
 chars: 10699
 ---

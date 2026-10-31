@@ -4,7 +4,7 @@ title: Política de Innovación
 section: politica-de-innovacion
 domain: carvajal.com
 source_type: oficial
-captured_at: 2026-10-30T00:34:09.275990+00:00
+captured_at: 2026-10-31T13:43:29.138192+00:00
 hash: 46493325114caea174e7d03ff15f852da1ddab4398125e2d09c991e16c23752d
 chars: 2467
 ---

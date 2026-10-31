@@ -4,7 +4,7 @@ title: Noticias archivo
 section: noticias
 domain: carvajal.com
 source_type: oficial
-captured_at: 2026-10-30T00:33:37.746403+00:00
+captured_at: 2026-10-31T13:43:05.768573+00:00
 hash: 1ae56b7431c346da589a9425b4fba49a83272e75d2b7376eaf68ac4d7e760d16
 chars: 1170
 ---

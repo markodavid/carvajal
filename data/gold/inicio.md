@@ -4,7 +4,7 @@ title: Inicio
 section: inversionistas
 domain: carvajal.com
 source_type: oficial
-captured_at: 2026-10-30T00:33:58.315150+00:00
+captured_at: 2026-10-31T13:43:21.448203+00:00
 hash: a15fc8fb7d29d15116389845c636c9f1e9bf6cb3e4a9190e766eb5c703f87c45
 chars: 2199
 ---

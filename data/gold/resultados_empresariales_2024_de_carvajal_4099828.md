@@ -4,9 +4,9 @@ title: Carvajal presentó resultados financieros y reportó ingresos por $3,9 bi
 section: prensa
 domain: larepublica.co
 source_type: tercero
-captured_at: 2026-10-30T00:34:14.877125+00:00
-hash: 122efc81d17f376ed95bdd001efd68a8822d13f8d119854d2812f2a76908830b
-chars: 4292
+captured_at: 2026-10-31T13:43:32.009591+00:00
+hash: 952b509d4020ba18ac2254ac0c465db2bbd9edce79d6f372affba1e82c0fecf4
+chars: 4288
 ---
 
 ## Carvajal presentó resultados financieros y reportó ingresos por $3,9 billones en 2024
@@ -47,28 +47,28 @@ Además, aprobaron la elección de la Junta Directiva que quedó así: Jaime Ber
 
 ## MÁS DE EMPRESAS
 
-## Metropolitan Printer y Legis Editores piden entrar en proceso de reorganización
+## Mercado Libre registró más de 3,3 millones de búsquedas asociadas con Halloween
 
-Las compañías hicieron esta petición a la Superintendencia de Sociedades debido a la cesación de pagos y su situación de sus pasivos
+Al desagregar el flujo de búsquedas por categoría, Mercado Libre detalló que, en primer lugar se ubica accesorios para caracterización y maquillaje
 
-## El dueño de Trululú vive temporada de Halloween con ventas en más de 30 países
+## Frisby España asegura que hay colombianos interesados en adquirir sus franquicias
 
-Con corte a julio, Colombina, Super y Nacional de Chocolates lideraron exportaciones de golosinas, por un valor de US$195,3 millones. Así está el ranking
+El CEO de la sociedad española dijo que el pleito con Frisby Colombia puede tardar 10 años y ellos seguirán expandiéndose
 
-## La Andi comunicó que aún no hay humo blanco en búsqueda de su próximo presidente
+## Saint-Martin fue el escenario del tercer destino oculto de Wingo, así fue la experiencia
 
-La Asociación aseguró que hasta que se concrete la elección de un nuevo presidente, la Junta de Dirección General y su Mesa Directiva estarán al frente
+Saint-Martin fue el tercer destino oculto de Wingo, una experiencia en que 350 viajeros compran un tiquete aéreo sin saber dónde aterrizarían
 
 ### MÁS DE LA REPÚBLICA
 
-## Apple lanza su primer MacBook táctil y deja atrás la visión de Steve Jobs
+## Crecimiento de EE.UU. repuntó en tercer trimestre, mientras inflación sigue alta
 
-## Estas son todas las etapas del calvario que marcó el trámite de la reforma pensional
+## Gremios piden modernizar el transporte de carga para mejorar la competitividad
 
-## KOA entró a la Bolsa de Colombia como emisor de CDT con más de 18.000 clientes
+## Los clientes de Banco Contactar ya pueden realizar pagos y transacciones por PSE
 
 ## ¿Cuánto cuesta viajar a Barranquilla para presenciar la final de la Copa Sudamericana?
 
-## Abelardo de la Espriella dirigió un nuevo operativo de seguridad en barrio San Bernardo
+## JEP imputó crímenes de guerra y de lesa humanidad a Pablo Catatumbo y otros exjefes de las Farc
 
-## Cómo distribuir la prima de fin de año para comenzar 2027 con mayor tranquilidad
+## No espere a tener embargos, lo que debe hacer cuando ya no puede pagar sus deudas

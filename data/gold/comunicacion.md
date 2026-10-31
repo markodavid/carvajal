@@ -4,7 +4,7 @@ title: Soluciones de Comunicación
 section: comunicacion
 domain: carvajal.com
 source_type: oficial
-captured_at: 2026-10-30T00:33:50.063499+00:00
+captured_at: 2026-10-31T13:43:15.120323+00:00
 hash: 9cf0c5c77ccd7da7b44527c2dbb8b8b241b3b0824fd5f54c7a40a4ae8ecc456a
 chars: 2156
 ---

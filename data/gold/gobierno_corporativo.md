@@ -4,7 +4,7 @@ title: Gobierno corporativo
 section: gobierno-corporativo
 domain: carvajal.com
 source_type: oficial
-captured_at: 2026-10-30T00:34:01.167987+00:00
+captured_at: 2026-10-31T13:43:23.791046+00:00
 hash: 88300d4a057ce4cb642cc95db8b6d0076f4848d95ab046d79f8e117e5bf2a492
 chars: 8285
 ---

@@ -4,7 +4,7 @@ title: Pulpa y Papel
 section: pulpa-y-papel
 domain: carvajal.com
 source_type: oficial
-captured_at: 2026-10-30T00:34:07.882242+00:00
+captured_at: 2026-10-31T13:43:28.159534+00:00
 hash: bad5ad7bf128d369263e29c5bc863c3c2b6902f773122aa93c33839df4f51dd2
 chars: 1827
 ---

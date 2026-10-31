@@ -4,7 +4,7 @@ title: Propiedades e Inversiones
 section: propiedades-e-inversiones
 domain: carvajal.com
 source_type: oficial
-captured_at: 2026-10-30T00:33:54.973871+00:00
+captured_at: 2026-10-31T13:43:18.794018+00:00
 hash: 7bfd82bffd0db180d92277212cb7ae66a807eb67093940be94e7b040b3383370
 chars: 1661
 ---

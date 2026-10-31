@@ -4,7 +4,7 @@ title: Sostenibilidad
 section: sostenibilidad
 domain: carvajal.com
 source_type: oficial
-captured_at: 2026-10-30T00:33:35.336634+00:00
+captured_at: 2026-10-31T14:05:35.648883+00:00
 hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
 chars: 0
 ---

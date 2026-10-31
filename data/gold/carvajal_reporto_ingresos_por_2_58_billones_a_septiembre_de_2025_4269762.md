@@ -4,9 +4,9 @@ title: La Organización Carvajal reportó ingresos por $2,58 billones a septiemb
 section: prensa
 domain: larepublica.co
 source_type: tercero
-captured_at: 2026-10-30T00:34:15.746670+00:00
-hash: add9f65936fe948890fc6dc48f2018832411ca69a4b13d6987c37167b10ca70a
-chars: 3598
+captured_at: 2026-10-31T13:43:32.338277+00:00
+hash: c44d8961dcef885a95d89d80c13ccf9b6723a173609e4f68a7a6ce512bb253a0
+chars: 3503
 ---
 
 ## La Organización Carvajal reportó ingresos por $2,58 billones a septiembre de 2025
@@ -49,28 +49,26 @@ Al cierre de septiembre, el margen bruto consolidado se ubicó en 30%, en línea
 
 ## MÁS DE EMPRESAS
 
-## Metropolitan Printer y Legis Editores piden entrar en proceso de reorganización
+## Satena obtiene certificación de EE.UU. y participará en negocio de reparación aeronáutica
 
-Las compañías hicieron esta petición a la Superintendencia de Sociedades debido a la cesación de pagos y su situación de sus pasivos
+La aerolínea estatal podrá diversificarse y prestar el servicio técnico dentro de las condiciones técnicas certificadas
 
-## El dueño de Trululú vive temporada de Halloween con ventas en más de 30 países
+## “Las ventas se han afectado en cerca de 50% a causa las plataformas extranjeras”
 
-Con corte a julio, Colombina, Super y Nacional de Chocolates lideraron exportaciones de golosinas, por un valor de US$195,3 millones. Así está el ranking
+Daniel Toledo, gerente de Fantastic Night, dijo que Para esta temporada, esperan comercializar entre 130.000 y 140.000 prendas, sin crecimiento frente al año pasado
 
-## La Andi comunicó que aún no hay humo blanco en búsqueda de su próximo presidente
+## Claro implementó su propia red troncal de transmisión en la región de Vichada
 
-La Asociación aseguró que hasta que se concrete la elección de un nuevo presidente, la Junta de Dirección General y su Mesa Directiva estarán al frente
+La compañía dijo que este despliegue de ingeniería de telecomunicaciones incluyó una inversión de $19.000 millones
 
 ### MÁS DE LA REPÚBLICA
 
-## Apple lanza su primer MacBook táctil y deja atrás la visión de Steve Jobs
+## EE.UU. propone elecciones presidenciales en Venezuela en 2027, dice opositora Machado
 
-## Estas son todas las etapas del calvario que marcó el trámite de la reforma pensional
+## Utilidades del Emisor a septiembre fueron de $5,97 billones, registran caída de 45%
 
-## KOA entró a la Bolsa de Colombia como emisor de CDT con más de 18.000 clientes
+## Martín Pescador abre su primera tienda internacional en Panamá y lanza línea femenina
 
-## ¿Cuánto cuesta viajar a Barranquilla para presenciar la final de la Copa Sudamericana?
+## “Ya registramos 15% de las solicitudes para las tarjetas de crédito a través de WhatsApp”
 
-## Abelardo de la Espriella dirigió un nuevo operativo de seguridad en barrio San Bernardo
-
-## Cómo distribuir la prima de fin de año para comenzar 2027 con mayor tranquilidad
+## Isadora Fernández renunció a la dirección de la Uspec dos meses después de su posesión

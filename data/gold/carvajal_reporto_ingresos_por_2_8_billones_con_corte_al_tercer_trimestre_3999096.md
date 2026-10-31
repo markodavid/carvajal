@@ -4,9 +4,9 @@ title: Carvajal reportó ingresos consolidados por $2,8 billones con corte al te
 section: prensa
 domain: larepublica.co
 source_type: tercero
-captured_at: 2026-10-30T00:34:16.368257+00:00
-hash: 533671bbc104c722e6eadacd288ccd1942b44f0ec9e8cfa21c4fc3ef1541b08d
-chars: 4229
+captured_at: 2026-10-31T13:43:33.517640+00:00
+hash: a824ca2efed8a121f921ac13a5c6b7593c9538e355044c73480369901d923a75
+chars: 4259
 ---
 
 ## Carvajal reportó ingresos consolidados por $2,8 billones con corte al tercer trimestre
@@ -53,28 +53,28 @@ Carvajal aseguró que ha buscado adaptarse a nuevas estrategias comerciales en s
 
 ## MÁS DE EMPRESAS
 
-## Las trabas que están frenando el uso de los drones dentro de la seguridad privada
+## Comisión de la Andi se reúne hoy para definir terna que reemplazará a Mac Master
 
-Las empresas deben cumplir al menos siete requisitos ante dos entidades, mientras los grupos criminales adaptan equipos comerciales para cometer ataques.
+Esta comisión, conformada por integrantes de la junta directiva de 35 miembros, cuenta con el acompañamiento de Roberto Hall
 
-## Tesla y marcas chinas tienen alrededor de 86% del mercado de carros eléctricos
+## "Lunia lanzará una línea deportiva y llegará a Madrid de la mano de Malva"
 
-De enero a septiembre, Tesla registró 16.542 matrículas de vehículos eléctricos, mientras que las marcas chinas y MG, de capital chino, sumaron otras 17.585 unidades
+Laura Ángel y María Fernanda Richter, cofundadoras de Lunia Shapewear, explicaron sus planes de expansión y la apuesta por nuevos productos y más canales de venta
 
-## Metropolitan Printer y Legis Editores piden entrar en proceso de reorganización
+## Coosalud vuelve al control privado tras decisión de tribunal de terminar intervención
 
-Las compañías hicieron esta petición a la Superintendencia de Sociedades debido a la cesación de pagos y su situación de sus pasivos
+Tras esta decisión, Supersalud adelantará las actuaciones administrativas correspondientes para restituir la administración de la aseguradora a su anterior equipo directivo
 
 ### MÁS DE LA REPÚBLICA
 
-## Apple lanza su primer MacBook táctil y deja atrás la visión de Steve Jobs
+## Paraguay envejecerá en la mitad de tiempo que Europa, pero el país no está preparado
 
-## Estas son todas las etapas del calvario que marcó el trámite de la reforma pensional
+## Utilidades del Emisor a septiembre fueron de $5,97 billones, registran caída de 45%
 
-## KOA entró a la Bolsa de Colombia como emisor de CDT con más de 18.000 clientes
+## Colombia Fintech propuso ruta para para avanzar en la regulación de los criptoactivos
 
 ## ¿Cuánto cuesta viajar a Barranquilla para presenciar la final de la Copa Sudamericana?
 
-## Denuncian a Petro ante la Comisión de Acusaciones por plan para afectar las elecciones
+## JEP imputó crímenes de guerra y de lesa humanidad a Pablo Catatumbo y exjefes de las Farc
 
-## Cómo distribuir la prima de fin de año para comenzar 2027 con mayor tranquilidad
+## No espere a tener embargos, lo que debe hacer cuando ya no puede pagar sus deudas

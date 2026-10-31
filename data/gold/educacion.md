@@ -4,7 +4,7 @@ title: Educación
 section: educacion
 domain: carvajal.com
 source_type: oficial
-captured_at: 2026-10-30T00:33:47.857963+00:00
+captured_at: 2026-10-31T13:43:13.434346+00:00
 hash: 48a67513de763676fb870c2f4de789c4fcf39ff525ce5f16564465499e83f9cd
 chars: 1649
 ---

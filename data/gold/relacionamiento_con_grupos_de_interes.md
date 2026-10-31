@@ -4,7 +4,7 @@ title: Relacionamiento con grupos de interes
 section: compromiso-etico
 domain: carvajal.com
 source_type: oficial
-captured_at: 2026-10-30T00:34:10.909554+00:00
+captured_at: 2026-10-31T13:43:30.449567+00:00
 hash: 12da3fdb4cb8c3d1cb026fb7cbc05481ee5e275e9c7a8fb28b302544832388f9
 chars: 1902
 ---
