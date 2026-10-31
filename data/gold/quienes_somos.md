@@ -4,7 +4,7 @@ title: Quiénes somos
 section: quienes-somos
 domain: carvajal.com
 source_type: oficial
-captured_at: 2026-10-31T14:05:29.921528+00:00
+captured_at: 2026-10-31T15:38:43.981983+00:00
 hash: b42db1856cd17adeb90cf242889bc092df37788d359975d88709cb06e0dd0e84
 chars: 1579
 ---

@@ -4,7 +4,7 @@ title: Historia
 section: historia
 domain: carvajal.com
 source_type: oficial
-captured_at: 2026-10-31T14:05:33.278038+00:00
+captured_at: 2026-10-31T15:38:48.610197+00:00
 hash: d06140fb12de78735129c106cb1eef4b5c84db66e121096da6326e0cbfe1e4fb
 chars: 20517
 ---

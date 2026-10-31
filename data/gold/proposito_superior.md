@@ -4,7 +4,7 @@ title: Propósito Superior
 section: proposito-superior
 domain: carvajal.com
 source_type: oficial
-captured_at: 2026-10-31T14:05:34.721112+00:00
+captured_at: 2026-10-31T15:38:50.416793+00:00
 hash: 7f393377f6644f310e39fc8a2d9d59786fba4b64e445732faf6eeab43a5c6da9
 chars: 905
 ---

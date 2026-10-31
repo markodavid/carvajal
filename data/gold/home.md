@@ -4,7 +4,7 @@ title: Carvajal S.A.
 section: home
 domain: carvajal.com
 source_type: oficial
-captured_at: 2026-10-31T14:05:28.449445+00:00
+captured_at: 2026-10-31T15:38:40.971465+00:00
 hash: 5d42f43c202dfbcce069cd6ea342380024d663c3fff4d0cafe32b30d26cbc075
 chars: 2085
 ---
